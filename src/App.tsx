@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, type JSX } from 'react';
+import { useState, useEffect, useMemo, useRef, type JSX } from 'react';
 import { searchTournaments, createTournamentSearchRequest } from "./services/tournamentApi";
 import type { Tournament } from "./types/tournament";
 import { TournamentCard } from "./components/TournamentCard";
@@ -14,8 +14,15 @@ function App() {
   const [selectedEventCategories, setSelectedEventCategories] = useState<Set<EventCategory>>(new Set());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const hasFetchedRef = useRef(false);
 
   useEffect(() => {
+    // Prevent duplicate calls
+    if (hasFetchedRef.current) {
+      return;
+    }
+    hasFetchedRef.current = true;
+
     async function fetchTournaments() {
       try {
         setLoading(true);
