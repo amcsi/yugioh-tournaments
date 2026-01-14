@@ -1,3 +1,4 @@
+import axios from "axios";
 import type {
   TournamentSearchRequest,
   TournamentSearchResponse,
@@ -9,29 +10,25 @@ const API_URL =
 export async function searchTournaments(
   request: TournamentSearchRequest,
 ): Promise<TournamentSearchResponse> {
-  // Make direct request to the API
-  const requestBody = JSON.stringify(request);
-
+  // Make direct request to the API using axios
   try {
-    const response = await fetch(API_URL, {
-      method: "POST",
+    const response = await axios.post<TournamentSearchResponse>(API_URL, request, {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json, text/plain, */*",
       },
-      body: requestBody,
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
+    return response.data;
+  } catch (err) {
+    if (axios.isAxiosError(err)) {
+      const errorMessage = err.response?.data
+        ? String(err.response.data)
+        : err.message;
       throw new Error(
-        `Failed to fetch tournaments: ${response.status} ${response.statusText}. ${errorText}`,
+        `Failed to fetch tournaments: ${err.response?.status || "Unknown"} ${errorMessage}`,
       );
     }
-
-    const data = await response.json();
-    return data;
-  } catch (err) {
     if (err instanceof Error) {
       throw err;
     }
