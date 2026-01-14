@@ -5,6 +5,7 @@ import { TournamentCard } from "./components/TournamentCard";
 import { StoreFilter } from "./components/StoreFilter";
 import { EventCategoryFilter } from "./components/EventCategoryFilter";
 import { getEventCategory, type EventCategory } from "./utils/eventCategory";
+import { groupTournamentsByWeek, getWeekInfo, isCurrentWeek } from "./utils/weekUtils";
 import "./App.css";
 
 function App() {
@@ -166,9 +167,31 @@ function App() {
             </div>
             <div className="tournaments-list">
               {tournaments.length > 0 ? (
-                tournaments.map((tournament) => (
-                  <TournamentCard key={tournament.tournamentNo} tournament={tournament} />
-                ))
+                (() => {
+                  const groupedByWeek = groupTournamentsByWeek(tournaments);
+                  const result: JSX.Element[] = [];
+                  
+                  groupedByWeek.forEach((weekTournaments, weekKey) => {
+                    const firstTournament = weekTournaments[0];
+                    const weekInfo = getWeekInfo(firstTournament.localTournamentDate);
+                    const isCurrent = isCurrentWeek(weekInfo.week, weekInfo.year);
+                    
+                    result.push(
+                      <div key={weekKey} className="week-section">
+                        {!isCurrent && (
+                          <div className="week-header">
+                            <span className="week-label">{weekInfo.display}</span>
+                          </div>
+                        )}
+                        {weekTournaments.map((tournament) => (
+                          <TournamentCard key={tournament.tournamentNo} tournament={tournament} />
+                        ))}
+                      </div>
+                    );
+                  });
+                  
+                  return result;
+                })()
               ) : (
                 <div className="empty">
                   <p>Nincs verseny a kiválasztott szűrőkhöz.</p>
