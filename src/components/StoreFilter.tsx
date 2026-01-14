@@ -34,7 +34,7 @@ export function StoreFilter({
     }
   });
 
-  // Convert to array and sort: Metagames first, Remetebarlang second, then by count
+  // Convert to array and sort: Metagame first, Remetebarlang second, then by count
   const stores: StoreInfo[] = Array.from(storeMap.entries())
     .map(([name, info]) => ({ name, ...info }))
     .sort((a, b) => {
@@ -95,7 +95,7 @@ function getStoreType(storeName: string): string {
   const name = storeName.toLowerCase();
   
   if (name.includes("metagame")) {
-    return "Metagames";
+    return "Metagame";
   } else if (name.includes("remete") || name.includes("remetebarlang")) {
     return "Remetebarlang";
   } else if (name.includes("sas") || name.includes("kos")) {
@@ -113,7 +113,7 @@ function getStoreType(storeName: string): string {
 
 function getStorePriority(storeType: string): number {
   // Lower number = higher priority
-  if (storeType === "Metagames") {
+  if (storeType === "Metagame") {
     return 1;
   } else if (storeType === "Remetebarlang") {
     return 2;

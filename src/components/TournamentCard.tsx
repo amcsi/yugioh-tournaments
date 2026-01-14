@@ -35,7 +35,7 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
     if (name.includes("metagame")) {
       return "Metagame";
     } else if (name.includes("remete") || name.includes("remetebarlang")) {
-      return "Remete";
+      return "Remetebarlang";
     } else if (name.includes("sas") || name.includes("kos")) {
       return "SAS és KOS";
     } else if (name.includes("pöttyös") || name.includes("zebra")) {
