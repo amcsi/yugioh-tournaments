@@ -5,22 +5,19 @@ import type {
 
 const API_URL =
   "https://cardgame-network.konami.net/mt/user/rest/tournament/EU/tournament_gsearch";
-const CORS_PROXY = "https://allorigins.win/raw";
 
 export async function searchTournaments(
   request: TournamentSearchRequest,
 ): Promise<TournamentSearchResponse> {
-  // Use allorigins.win/raw for POST requests
-  // It forwards the request method and body to the target URL
+  // Make direct request to the API
   const requestBody = JSON.stringify(request);
-  const proxyUrl = `${CORS_PROXY}?url=${encodeURIComponent(API_URL)}`;
 
   try {
-    const response = await fetch(proxyUrl, {
+    const response = await fetch(API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Accept: "application/json",
+        Accept: "application/json, text/plain, */*",
       },
       body: requestBody,
     });
