@@ -1,4 +1,5 @@
 import type { Tournament } from "../types/tournament";
+import { getEventCategory, getEventCategoryColor, type EventCategory } from "../utils/eventCategory";
 import "./TournamentCard.css";
 
 interface TournamentCardProps {
@@ -50,11 +51,21 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
   };
 
   const storeType = getStoreType(tournament.storeName || tournament.locationName);
+  const eventCategory = getEventCategory(tournament);
+  const eventCategoryColor = getEventCategoryColor(eventCategory);
 
   return (
     <div className="tournament-card">
       <div className="tournament-header">
-        <h3 className="tournament-name">{tournament.tournamentName}</h3>
+        <div className="tournament-header-left">
+          <h3 className="tournament-name">{tournament.tournamentName}</h3>
+          <span
+            className="event-category-badge"
+            style={{ backgroundColor: eventCategoryColor }}
+          >
+            {eventCategory}
+          </span>
+        </div>
         <div className="tournament-header-right">
           <span className="store-type-badge">{storeType}</span>
           <span className="tournament-number">{tournament.tournamentNo}</span>

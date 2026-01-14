@@ -3,11 +3,14 @@ import { searchTournaments, createTournamentSearchRequest } from "./services/tou
 import type { Tournament } from "./types/tournament";
 import { TournamentCard } from "./components/TournamentCard";
 import { StoreFilter } from "./components/StoreFilter";
+import { EventCategoryFilter } from "./components/EventCategoryFilter";
+import { getEventCategory, type EventCategory } from "./utils/eventCategory";
 import "./App.css";
 
 function App() {
   const [allTournaments, setAllTournaments] = useState<Tournament[]>([]);
   const [selectedStores, setSelectedStores] = useState<Set<string>>(new Set());
+  const [selectedEventCategories, setSelectedEventCategories] = useState<Set<EventCategory>>(new Set());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -30,16 +33,28 @@ function App() {
     fetchTournaments();
   }, []);
 
-  // Filter tournaments based on selected stores
+  // Filter tournaments based on selected stores and event categories
   const tournaments = useMemo(() => {
-    if (selectedStores.size === 0) {
-      return allTournaments;
-    }
     return allTournaments.filter((tournament) => {
-      const storeName = tournament.storeName || tournament.locationName;
-      return storeName && selectedStores.has(storeName);
+      // Filter by store
+      if (selectedStores.size > 0) {
+        const storeName = tournament.storeName || tournament.locationName;
+        if (!storeName || !selectedStores.has(storeName)) {
+          return false;
+        }
+      }
+
+      // Filter by event category
+      if (selectedEventCategories.size > 0) {
+        const category = getEventCategory(tournament);
+        if (!selectedEventCategories.has(category)) {
+          return false;
+        }
+      }
+
+      return true;
     });
-  }, [allTournaments, selectedStores]);
+  }, [allTournaments, selectedStores, selectedEventCategories]);
 
   // Get all stores for the "other stores" logic
   const allStores = useMemo(() => {
@@ -89,6 +104,19 @@ function App() {
 
   const handleClearFilter = () => {
     setSelectedStores(new Set());
+    setSelectedEventCategories(new Set());
+  };
+
+  const handleEventCategoryToggle = (category: EventCategory) => {
+    setSelectedEventCategories((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(category)) {
+        newSet.delete(category);
+      } else {
+        newSet.add(category);
+      }
+      return newSet;
+    });
   };
 
   return (
@@ -120,6 +148,11 @@ function App() {
 
         {!loading && !error && allTournaments.length > 0 && (
           <>
+            <EventCategoryFilter
+              tournaments={allTournaments}
+              selectedCategories={selectedEventCategories}
+              onCategoryToggle={handleEventCategoryToggle}
+            />
             <StoreFilter
               tournaments={allTournaments}
               selectedStores={selectedStores}
@@ -129,7 +162,7 @@ function App() {
             />
             <div className="tournaments-count">
               {tournaments.length} verseny található
-              {selectedStores.size > 0 && ` (${allTournaments.length} összesen)`}
+              {(selectedStores.size > 0 || selectedEventCategories.size > 0) && ` (${allTournaments.length} összesen)`}
             </div>
             <div className="tournaments-list">
               {tournaments.length > 0 ? (
@@ -138,7 +171,7 @@ function App() {
                 ))
               ) : (
                 <div className="empty">
-                  <p>Nincs verseny a kiválasztott boltokhoz.</p>
+                  <p>Nincs verseny a kiválasztott szűrőkhöz.</p>
                 </div>
               )}
             </div>
