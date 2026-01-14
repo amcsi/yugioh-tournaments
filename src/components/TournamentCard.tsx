@@ -131,7 +131,16 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
 
         <div className="info-row">
           <span className="info-label">Cím:</span>
-          <span className="info-value">{tournament.address}</span>
+          <span className="info-value">
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(tournament.address)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="address-link"
+            >
+              {tournament.address}
+            </a>
+          </span>
         </div>
 
         {tournament.location.telNo && (
