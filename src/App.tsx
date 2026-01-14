@@ -18,7 +18,7 @@ function App() {
         const response = await searchTournaments(request);
         setTournaments(response.result);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load tournaments");
+        setError(err instanceof Error ? err.message : "Nem sikerült betölteni a versenyeket");
         console.error("Error fetching tournaments:", err);
       } finally {
         setLoading(false);
@@ -31,35 +31,34 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>Yu-Gi-Oh! Tournaments in Hungary</h1>
-        <p className="subtitle">Find the latest tournament events near you</p>
+        <h1>Yu-Gi-Oh! Versenyek Magyarországon</h1>
       </header>
 
       <main className="app-main">
         {loading && (
           <div className="loading">
             <div className="spinner"></div>
-            <p>Loading tournaments...</p>
+            <p>Versenyek betöltése...</p>
           </div>
         )}
 
         {error && (
           <div className="error">
             <p>⚠️ {error}</p>
-            <button onClick={() => window.location.reload()}>Retry</button>
+            <button onClick={() => window.location.reload()}>Újra</button>
           </div>
         )}
 
         {!loading && !error && tournaments.length === 0 && (
           <div className="empty">
-            <p>No tournaments found for the current date range.</p>
+            <p>Nem található verseny az aktuális dátumtartományban.</p>
           </div>
         )}
 
         {!loading && !error && tournaments.length > 0 && (
           <>
             <div className="tournaments-count">
-              Found {tournaments.length} tournament{tournaments.length !== 1 ? "s" : ""}
+              {tournaments.length} verseny található
             </div>
             <div className="tournaments-list">
               {tournaments.map((tournament) => (

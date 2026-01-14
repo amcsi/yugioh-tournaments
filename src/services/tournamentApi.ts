@@ -30,13 +30,13 @@ export async function searchTournaments(
         ? String(err.response.data)
         : err.message;
       throw new Error(
-        `Failed to fetch tournaments: ${err.response?.status || "Unknown"} ${errorMessage}`,
+        `Nem sikerült betölteni a versenyeket: ${err.response?.status || "Ismeretlen"} ${errorMessage}`,
       );
     }
     if (err instanceof Error) {
       throw err;
     }
-    throw new Error("Unknown error occurred while fetching tournaments");
+    throw new Error("Ismeretlen hiba történt a versenyek betöltése során");
   }
 }
 
