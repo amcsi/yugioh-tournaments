@@ -6,13 +6,17 @@ import type {
 
 const API_URL =
   "https://cardgame-network.konami.net/mt/user/rest/tournament/EU/tournament_gsearch";
+const CORS_PROXY = "https://cors-anywhere.com/";
 
 export async function searchTournaments(
   request: TournamentSearchRequest,
 ): Promise<TournamentSearchResponse> {
-  // Make direct request to the API using axios
+  // Use cors.lol as CORS proxy
+  // cors.lol works by prepending the proxy URL to the target URL
+  const proxyUrl = `${CORS_PROXY}${API_URL}`;
+
   try {
-    const response = await axios.post<TournamentSearchResponse>(API_URL, request, {
+    const response = await axios.post<TournamentSearchResponse>(proxyUrl, request, {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json, text/plain, */*",
