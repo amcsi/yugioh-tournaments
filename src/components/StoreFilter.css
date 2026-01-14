@@ -61,6 +61,12 @@
   font-weight: 500;
 }
 
+.store-city {
+  color: #aaa;
+  font-weight: 400;
+  font-size: 0.9em;
+}
+
 .store-badge {
   background: rgba(255, 255, 255, 0.15);
   padding: 0.25rem 0.5rem;

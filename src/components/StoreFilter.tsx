@@ -13,6 +13,7 @@ interface StoreInfo {
   name: string;
   count: number;
   type: string;
+  city: string;
 }
 
 export function StoreFilter({
@@ -23,13 +24,22 @@ export function StoreFilter({
   onClearFilter,
 }: StoreFilterProps) {
   // Extract unique stores and count tournaments per store
-  const storeMap = new Map<string, { count: number; type: string }>();
+  const storeMap = new Map<string, { count: number; type: string; city: string }>();
 
   tournaments.forEach((tournament) => {
     const storeName = tournament.storeName || tournament.locationName;
     if (storeName) {
-      const existing = storeMap.get(storeName) || { count: 0, type: getStoreType(storeName) };
+      const city = getCityFromTournament(tournament);
+      const existing = storeMap.get(storeName) || { 
+        count: 0, 
+        type: getStoreType(storeName),
+        city: city,
+      };
       existing.count++;
+      // Update city if we find a different one (should be same, but just in case)
+      if (city && !existing.city) {
+        existing.city = city;
+      }
       storeMap.set(storeName, existing);
     }
   });
@@ -67,7 +77,10 @@ export function StoreFilter({
             className={`store-button ${selectedStores.has(store.name) ? "active" : ""}`}
             onClick={() => onStoreToggle(store.name)}
           >
-            <span className="store-name">{store.name}</span>
+            <span className="store-name">
+              {store.name}
+              {store.city && <span className="store-city"> ({store.city})</span>}
+            </span>
             <span className="store-badge">{store.type}</span>
             <span className="store-count">({store.count})</span>
           </button>
@@ -89,6 +102,26 @@ export function StoreFilter({
       )}
     </div>
   );
+}
+
+function getCityFromTournament(tournament: Tournament): string {
+  // Try to get city from location.address1 (most reliable)
+  if (tournament.location?.address1) {
+    return tournament.location.address1;
+  }
+  
+  // Fallback to parsing from address string
+  if (tournament.address) {
+    // Address format is typically "8200 Veszprém Horgos u. 3."
+    // Extract city name (usually the second word)
+    const parts = tournament.address.trim().split(/\s+/);
+    if (parts.length >= 2) {
+      // Skip postal code (first part) and get city (second part)
+      return parts[1];
+    }
+  }
+  
+  return "";
 }
 
 function getStoreType(storeName: string): string {
