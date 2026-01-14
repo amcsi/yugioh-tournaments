@@ -1,5 +1,5 @@
 import type { Tournament } from "../types/tournament";
-import { getEventCategory, getEventCategoryColor, type EventCategory } from "../utils/eventCategory";
+import { getEventCategory, getEventCategoryColor } from "../utils/eventCategory";
 import "./TournamentCard.css";
 
 interface TournamentCardProps {

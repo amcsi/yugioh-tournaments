@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, type JSX } from 'react';
 import { searchTournaments, createTournamentSearchRequest } from "./services/tournamentApi";
 import type { Tournament } from "./types/tournament";
 import { TournamentCard } from "./components/TournamentCard";
@@ -71,7 +71,6 @@ function App() {
       .sort();
   }, [allTournaments]);
 
-  const mainStores = allStores.slice(0, 8);
   const otherStores = allStores.slice(8);
 
   const handleStoreToggle = (storeName: string) => {
