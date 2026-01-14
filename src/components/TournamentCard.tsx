@@ -29,11 +29,36 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
     return state === "RESERVEABLE" ? "Foglalás lehetséges" : "Nincs foglalás";
   };
 
+  const getStoreType = (storeName: string): string => {
+    const name = storeName.toLowerCase();
+    
+    if (name.includes("metagame")) {
+      return "Metagame";
+    } else if (name.includes("remete") || name.includes("remetebarlang")) {
+      return "Remete";
+    } else if (name.includes("sas") || name.includes("kos")) {
+      return "SAS és KOS";
+    } else if (name.includes("pöttyös") || name.includes("zebra")) {
+      return "Pöttyös Zebra";
+    } else if (name.includes("sport") || name.includes("kártya")) {
+      return "Sport Kártya";
+    } else if (name.includes("bar of legends") || name.includes("bol")) {
+      return "BoL";
+    } else {
+      return "Egyéb";
+    }
+  };
+
+  const storeType = getStoreType(tournament.storeName || tournament.locationName);
+
   return (
     <div className="tournament-card">
       <div className="tournament-header">
         <h3 className="tournament-name">{tournament.tournamentName}</h3>
-        <span className="tournament-number">{tournament.tournamentNo}</span>
+        <div className="tournament-header-right">
+          <span className="store-type-badge">{storeType}</span>
+          <span className="tournament-number">{tournament.tournamentNo}</span>
+        </div>
       </div>
 
       <div className="tournament-info">

@@ -20,6 +20,7 @@
   margin-bottom: 1rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  gap: 1rem;
 }
 
 .tournament-name {
@@ -30,13 +31,31 @@
   flex: 1;
 }
 
+.tournament-header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.store-type-badge {
+  font-size: 0.75rem;
+  color: #fff;
+  background: linear-gradient(135deg, #646cff 0%, #535bf2 100%);
+  padding: 0.35rem 0.65rem;
+  border-radius: 6px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
 .tournament-number {
   font-size: 0.875rem;
   color: #888;
   background: rgba(255, 255, 255, 0.05);
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
-  margin-left: 1rem;
 }
 
 .tournament-info {
@@ -89,9 +108,10 @@
     gap: 0.5rem;
   }
 
-  .tournament-number {
-    margin-left: 0;
-    align-self: flex-start;
+  .tournament-header-right {
+    align-items: flex-start;
+    flex-direction: row;
+    gap: 0.5rem;
   }
 
   .info-row {

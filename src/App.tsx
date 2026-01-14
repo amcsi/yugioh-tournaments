@@ -1,11 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { searchTournaments, createTournamentSearchRequest } from "./services/tournamentApi";
 import type { Tournament } from "./types/tournament";
 import { TournamentCard } from "./components/TournamentCard";
+import { StoreFilter } from "./components/StoreFilter";
 import "./App.css";
 
 function App() {
-  const [tournaments, setTournaments] = useState<Tournament[]>([]);
+  const [allTournaments, setAllTournaments] = useState<Tournament[]>([]);
+  const [selectedStores, setSelectedStores] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -16,7 +18,7 @@ function App() {
         setError(null);
         const request = createTournamentSearchRequest();
         const response = await searchTournaments(request);
-        setTournaments(response.result);
+        setAllTournaments(response.result);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Nem sikerült betölteni a versenyeket");
         console.error("Error fetching tournaments:", err);
@@ -27,6 +29,67 @@ function App() {
 
     fetchTournaments();
   }, []);
+
+  // Filter tournaments based on selected stores
+  const tournaments = useMemo(() => {
+    if (selectedStores.size === 0) {
+      return allTournaments;
+    }
+    return allTournaments.filter((tournament) => {
+      const storeName = tournament.storeName || tournament.locationName;
+      return storeName && selectedStores.has(storeName);
+    });
+  }, [allTournaments, selectedStores]);
+
+  // Get all stores for the "other stores" logic
+  const allStores = useMemo(() => {
+    const storeMap = new Map<string, number>();
+    allTournaments.forEach((tournament) => {
+      const storeName = tournament.storeName || tournament.locationName;
+      if (storeName) {
+        storeMap.set(storeName, (storeMap.get(storeName) || 0) + 1);
+      }
+    });
+    return Array.from(storeMap.entries())
+      .map(([name]) => name)
+      .sort();
+  }, [allTournaments]);
+
+  const mainStores = allStores.slice(0, 8);
+  const otherStores = allStores.slice(8);
+
+  const handleStoreToggle = (storeName: string) => {
+    setSelectedStores((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(storeName)) {
+        newSet.delete(storeName);
+      } else {
+        newSet.add(storeName);
+      }
+      return newSet;
+    });
+  };
+
+  // Handle "other stores" toggle
+  const handleOtherStoresToggle = () => {
+    setSelectedStores((prev) => {
+      const newSet = new Set(prev);
+      const hasOtherSelected = otherStores.some((store) => newSet.has(store));
+      
+      if (hasOtherSelected) {
+        // Remove all other stores
+        otherStores.forEach((store) => newSet.delete(store));
+      } else {
+        // Add all other stores
+        otherStores.forEach((store) => newSet.add(store));
+      }
+      return newSet;
+    });
+  };
+
+  const handleClearFilter = () => {
+    setSelectedStores(new Set());
+  };
 
   return (
     <div className="app">
@@ -55,15 +118,29 @@ function App() {
           </div>
         )}
 
-        {!loading && !error && tournaments.length > 0 && (
+        {!loading && !error && allTournaments.length > 0 && (
           <>
+            <StoreFilter
+              tournaments={allTournaments}
+              selectedStores={selectedStores}
+              onStoreToggle={handleStoreToggle}
+              onOtherStoresToggle={handleOtherStoresToggle}
+              onClearFilter={handleClearFilter}
+            />
             <div className="tournaments-count">
               {tournaments.length} verseny található
+              {selectedStores.size > 0 && ` (${allTournaments.length} összesen)`}
             </div>
             <div className="tournaments-list">
-              {tournaments.map((tournament) => (
-                <TournamentCard key={tournament.tournamentNo} tournament={tournament} />
-              ))}
+              {tournaments.length > 0 ? (
+                tournaments.map((tournament) => (
+                  <TournamentCard key={tournament.tournamentNo} tournament={tournament} />
+                ))
+              ) : (
+                <div className="empty">
+                  <p>Nincs verseny a kiválasztott boltokhoz.</p>
+                </div>
+              )}
             </div>
           </>
         )}
