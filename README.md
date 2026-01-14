@@ -1,73 +1,50 @@
-# React + TypeScript + Vite
+# Yu-Gi-Oh! Tournaments in Hungary
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A web application that lists upcoming Yu-Gi-Oh! tournaments in Hungary. The app fetches tournament data from the Konami Card Game Network API and displays it in an easy-to-browse format with filtering capabilities.
 
-Currently, two official plugins are available:
+**Note**: This web app was developed with the help of [Cursor](https://cursor.sh), an AI-powered code editor.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## React Compiler
+- **Tournament Listings**: View all upcoming Yu-Gi-Oh! tournaments in Hungary
+- **Store Filtering**: Filter tournaments by store location (Metagame, Remetebarlang, SAS és KOS, etc.)
+- **Event Category Filtering**: Filter by tournament type (Local, OTS, Regional, Nemzeti)
+- **Week Organization**: Tournaments are grouped by week with clear separators
+- **Detailed Information**: Each tournament card shows:
+  - Tournament name and number
+  - Event type and structure
+  - Date and time (with day of week in Hungarian)
+  - Location and address (clickable Google Maps link)
+  - Player count and reservation status
+  - Store type badges
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+## Live Demo
 
-## Expanding the ESLint configuration
+🌐 **Live Site**: [https://yugiohverseny.netlify.app](https://yugiohverseny.netlify.app)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Tech Stack
 
-```js
-export default defineConfig([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
+- **React 19** with TypeScript
+- **Vite** for build tooling
+- **Axios** for API requests
+- Modern CSS with gradients and animations
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Development
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
+```bash
+# Install dependencies
+pnpm install
+
+# Start development server
+pnpm dev
+
+# Build for production
+pnpm build
+
+# Preview production build
+pnpm preview
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## License
 
-```js
-// eslint.config.js
-import reactX from "eslint-plugin-react-x";
-import reactDom from "eslint-plugin-react-dom";
-
-export default defineConfig([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs["recommended-typescript"],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
-```
+MIT License - see [LICENSE](LICENSE) file for details.
