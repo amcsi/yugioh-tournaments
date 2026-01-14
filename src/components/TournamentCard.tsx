@@ -13,6 +13,32 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
     return dateString.replace(" ", " - ");
   };
 
+  const formatDateWithDay = (dateString: string) => {
+    if (!dateString) return "N/A";
+    
+    try {
+      // Parse the date string "2026/01/15 15:00"
+      const [datePart, timePart] = dateString.split(" ");
+      const [year, month, day] = datePart.split("/").map(Number);
+      
+      // Create a date object (month is 0-indexed in JavaScript Date)
+      const date = new Date(year, month - 1, day);
+      
+      // Get day of week in Hungarian
+      const dayNames = ["vasárnap", "hétfő", "kedd", "szerda", "csütörtök", "péntek", "szombat"];
+      const dayName = dayNames[date.getDay()];
+      
+      // Format: "2026/01/15 (szerda) - 15:00"
+      if (timePart) {
+        return `${datePart} (${dayName}) - ${timePart}`;
+      }
+      return `${datePart} (${dayName})`;
+    } catch (error) {
+      // Fallback to original format if parsing fails
+      return formatDate(dateString);
+    }
+  };
+
   const getStructureLabel = (structure: string) => {
     switch (structure) {
       case "FREE":
@@ -86,8 +112,8 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
         <div className="info-row">
           <span className="info-label">Dátum és idő:</span>
           <span className="info-value">
-            {formatDate(tournament.localTournamentDate)}
-            {tournament.localTournamentDateEnd && ` - ${formatDate(tournament.localTournamentDateEnd)}`}
+            {formatDateWithDay(tournament.localTournamentDate)}
+            {tournament.localTournamentDateEnd && ` - ${formatDateWithDay(tournament.localTournamentDateEnd)}`}
           </span>
         </div>
 
