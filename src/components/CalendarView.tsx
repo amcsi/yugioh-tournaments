@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import type { Tournament } from "../types/tournament";
 import { TournamentCard } from "./TournamentCard";
 import { useLanguage } from "../contexts/LanguageContext";
+import { getEventCategory, getEventCategoryColor, getEventCategoryLabel, type EventCategory } from "../utils/eventCategory";
 import "./CalendarView.css";
 
 interface CalendarViewProps {
@@ -52,7 +53,18 @@ export function CalendarView({ tournaments }: CalendarViewProps) {
     const startDay = (firstDay.getDay() + 6) % 7; // Convert Sunday=0 to Monday=0
     const daysInMonth = lastDay.getDate();
     
-    const days: Array<{ date: Date; isCurrentMonth: boolean; tournamentCount: number }> = [];
+    const days: Array<{ date: Date; isCurrentMonth: boolean; categoryCounts: Map<EventCategory, number> }> = [];
+    
+    // Helper function to count tournaments by category
+    const getCategoryCounts = (dateKey: string): Map<EventCategory, number> => {
+      const tournaments = tournamentsByDate.get(dateKey) || [];
+      const counts = new Map<EventCategory, number>();
+      tournaments.forEach((tournament) => {
+        const category = getEventCategory(tournament);
+        counts.set(category, (counts.get(category) || 0) + 1);
+      });
+      return counts;
+    };
     
     // Previous month days
     const prevMonthLastDay = new Date(year, month, 0).getDate();
@@ -62,7 +74,7 @@ export function CalendarView({ tournaments }: CalendarViewProps) {
       days.push({
         date,
         isCurrentMonth: false,
-        tournamentCount: tournamentsByDate.get(dateKey)?.length || 0,
+        categoryCounts: getCategoryCounts(dateKey),
       });
     }
     
@@ -73,7 +85,7 @@ export function CalendarView({ tournaments }: CalendarViewProps) {
       days.push({
         date,
         isCurrentMonth: true,
-        tournamentCount: tournamentsByDate.get(dateKey)?.length || 0,
+        categoryCounts: getCategoryCounts(dateKey),
       });
     }
     
@@ -85,7 +97,7 @@ export function CalendarView({ tournaments }: CalendarViewProps) {
       days.push({
         date,
         isCurrentMonth: false,
-        tournamentCount: tournamentsByDate.get(dateKey)?.length || 0,
+        categoryCounts: getCategoryCounts(dateKey),
       });
     }
     
@@ -184,8 +196,18 @@ export function CalendarView({ tournaments }: CalendarViewProps) {
                   disabled={!dayInfo.isCurrentMonth}
                 >
                   <span className="calendar-day-number">{dayInfo.date.getDate()}</span>
-                  {dayInfo.tournamentCount > 0 && (
-                    <span className="calendar-day-badge">{dayInfo.tournamentCount}</span>
+                  {dayInfo.categoryCounts.size > 0 && (
+                    <div className="calendar-day-badges">
+                      {Array.from(dayInfo.categoryCounts.entries()).map(([category, count]) => (
+                        <span
+                          key={category}
+                          className="calendar-day-badge"
+                          style={{ backgroundColor: getEventCategoryColor(category) }}
+                        >
+                          {count}
+                        </span>
+                      ))}
+                    </div>
                   )}
                 </button>
                 {isHovered && dayTournaments.length > 0 && (
@@ -195,15 +217,29 @@ export function CalendarView({ tournaments }: CalendarViewProps) {
                         {formatDate(dayInfo.date)} ({dayTournaments.length})
                       </div>
                       <div className="tooltip-tournaments">
-                        {dayTournaments.slice(0, 5).map((tournament) => (
-                          <div key={tournament.tournamentNo} className="tooltip-tournament">
-                            <div className="tooltip-tournament-name">{tournament.tournamentName}</div>
-                            <div className="tooltip-tournament-time">
-                              {tournament.localTournamentDate.split(" ")[1] || ""}
+                        {dayTournaments.slice(0, 5).map((tournament) => {
+                          const category = getEventCategory(tournament);
+                          const categoryColor = getEventCategoryColor(category);
+                          const categoryLabel = getEventCategoryLabel(category, language);
+                          return (
+                            <div key={tournament.tournamentNo} className="tooltip-tournament">
+                              <div className="tooltip-tournament-header">
+                                <div className="tooltip-tournament-name">{tournament.tournamentName}</div>
+                                <span
+                                  className="tooltip-tournament-badge"
+                                  style={{ backgroundColor: categoryColor }}
+                                  title={categoryLabel}
+                                >
+                                  {categoryLabel}
+                                </span>
+                              </div>
+                              <div className="tooltip-tournament-time">
+                                {tournament.localTournamentDate.split(" ")[1] || ""}
+                              </div>
+                              <div className="tooltip-tournament-location">{tournament.locationName}</div>
                             </div>
-                            <div className="tooltip-tournament-location">{tournament.locationName}</div>
-                          </div>
-                        ))}
+                          );
+                        })}
                         {dayTournaments.length > 5 && (
                           <div className="tooltip-more">
                             {language === "hu" ? `+${dayTournaments.length - 5} további` : `+${dayTournaments.length - 5} more`}

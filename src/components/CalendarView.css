@@ -143,20 +143,31 @@
   font-weight: 500;
 }
 
-.calendar-day-badge {
+.calendar-day-badges {
   position: absolute;
   top: 0.25rem;
   right: 0.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem;
+  justify-content: flex-end;
+  max-width: calc(100% - 0.5rem);
+}
+
+.calendar-day-badge {
   background: #10b981;
   color: #fff;
   border-radius: 50%;
-  width: 1.25rem;
+  min-width: 1.25rem;
   height: 1.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 600;
+  padding: 0 0.3rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .calendar-day.selected .calendar-day-badge {
@@ -170,8 +181,8 @@
   top: calc(100% + 0.5rem);
   left: 50%;
   transform: translateX(-50%);
-  min-width: 300px;
-  max-width: 400px;
+  min-width: 450px;
+  max-width: 600px;
   animation: tooltipFadeIn 0.2s ease-out;
 }
 
@@ -192,7 +203,7 @@
   border-radius: 8px;
   padding: 1rem;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-  max-height: 400px;
+  max-height: 600px;
   overflow-y: auto;
 }
 
@@ -218,11 +229,32 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.tooltip-tournament-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
 .tooltip-tournament-name {
   font-weight: 500;
   color: #fff;
   font-size: 0.9rem;
-  margin-bottom: 0.25rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.tooltip-tournament-badge {
+  flex-shrink: 0;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .tooltip-tournament-time {
@@ -268,13 +300,13 @@
 
 @media (max-width: 768px) {
   .calendar-day-tooltip {
-    min-width: 250px;
-    max-width: 300px;
+    min-width: 375px;
+    max-width: 450px;
   }
 
   .tooltip-content {
     padding: 0.75rem;
-    max-height: 300px;
+    max-height: 450px;
   }
 }
 
