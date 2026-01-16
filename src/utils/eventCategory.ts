@@ -1,10 +1,15 @@
 import type { Tournament } from "../types/tournament";
 
-export type EventCategory = "Local" | "OTS" | "Regional" | "Nemzeti";
+export type EventCategory = "Local" | "OTS" | "Regional" | "Nemzeti" | "Szabad Játék";
 
 export function getEventCategory(tournament: Tournament): EventCategory {
   const eventName = tournament.eventName.toLowerCase();
   const eventUrl = tournament.eventUrl?.toLowerCase() || "";
+
+  // Check for Open Dueling (Szabad Játék)
+  if (eventName.includes("open dueling")) {
+    return "Szabad Játék";
+  }
 
   // Check for Regional events by URL first
   if (eventUrl.includes("opens") || eventUrl === "https://www.yugioh-card.com/eu/event-category/opens/") {
@@ -35,11 +40,13 @@ export function getEventCategoryColor(category: EventCategory): string {
     case "Local":
       return "#3b82f6"; // Blue
     case "OTS":
-      return "#10b981"; // Green
+      return "#a855f7"; // Purple
     case "Regional":
       return "#f59e0b"; // Amber/Orange
     case "Nemzeti":
       return "#ef4444"; // Red
+    case "Szabad Játék":
+      return "#10b981"; // Green
     default:
       return "#6b7280"; // Gray
   }

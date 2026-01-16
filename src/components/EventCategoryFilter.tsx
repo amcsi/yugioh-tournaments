@@ -21,7 +21,7 @@ export function EventCategoryFilter({
     categoryCounts.set(category, (categoryCounts.get(category) || 0) + 1);
   });
 
-  const categories: EventCategory[] = ["Local", "OTS", "Regional", "Nemzeti"];
+  const categories: EventCategory[] = ["Szabad Játék", "Local", "OTS", "Regional", "Nemzeti"];
 
   return (
     <div className="event-category-filter">
