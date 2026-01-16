@@ -4,8 +4,14 @@ export type EventCategory = "Local" | "OTS" | "Regional" | "Nemzeti";
 
 export function getEventCategory(tournament: Tournament): EventCategory {
   const eventName = tournament.eventName.toLowerCase();
+  const eventUrl = tournament.eventUrl?.toLowerCase() || "";
 
-  // Check for Regional events
+  // Check for Regional events by URL first
+  if (eventUrl.includes("opens") || eventUrl === "https://www.yugioh-card.com/eu/event-category/opens/") {
+    return "Regional";
+  }
+
+  // Check for Regional events by name
   if (eventName.includes("regional")) {
     return "Regional";
   }
