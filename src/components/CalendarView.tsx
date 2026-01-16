@@ -12,6 +12,7 @@ export function CalendarView({ tournaments }: CalendarViewProps) {
   const { language } = useLanguage();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [hoveredDate, setHoveredDate] = useState<Date | null>(null);
 
   // Group tournaments by date
   const tournamentsByDate = useMemo(() => {
@@ -159,26 +160,60 @@ export function CalendarView({ tournaments }: CalendarViewProps) {
             const dateKey = dayInfo.date.toISOString().split("T")[0];
             const isSelected = selectedDateKey === dateKey;
             const isToday = dateKey === new Date().toISOString().split("T")[0];
+            const isHovered = hoveredDate?.toISOString().split("T")[0] === dateKey;
             // Check if it's a weekend (Saturday = 5, Sunday = 6 in the grid, since we start with Monday)
             const dayOfWeek = dayInfo.date.getDay();
             const isWeekend = dayOfWeek === 0 || dayOfWeek === 6; // Sunday or Saturday
+            const dayTournaments = tournamentsByDate.get(dateKey) || [];
             
             return (
-              <button
-                key={index}
-                className={`calendar-day ${!dayInfo.isCurrentMonth ? "other-month" : ""} ${isSelected ? "selected" : ""} ${isToday ? "today" : ""} ${isWeekend ? "weekend" : ""}`}
-                onClick={() => {
-                  if (dayInfo.isCurrentMonth) {
-                    setSelectedDate(dayInfo.date);
-                  }
-                }}
-                disabled={!dayInfo.isCurrentMonth}
-              >
-                <span className="calendar-day-number">{dayInfo.date.getDate()}</span>
-                {dayInfo.tournamentCount > 0 && (
-                  <span className="calendar-day-badge">{dayInfo.tournamentCount}</span>
+              <div key={index} className="calendar-day-wrapper">
+                <button
+                  className={`calendar-day ${!dayInfo.isCurrentMonth ? "other-month" : ""} ${isSelected ? "selected" : ""} ${isToday ? "today" : ""} ${isWeekend ? "weekend" : ""}`}
+                  onClick={() => {
+                    if (dayInfo.isCurrentMonth) {
+                      setSelectedDate(dayInfo.date);
+                    }
+                  }}
+                  onMouseEnter={() => {
+                    if (dayInfo.isCurrentMonth && dayTournaments.length > 0) {
+                      setHoveredDate(dayInfo.date);
+                    }
+                  }}
+                  onMouseLeave={() => setHoveredDate(null)}
+                  disabled={!dayInfo.isCurrentMonth}
+                >
+                  <span className="calendar-day-number">{dayInfo.date.getDate()}</span>
+                  {dayInfo.tournamentCount > 0 && (
+                    <span className="calendar-day-badge">{dayInfo.tournamentCount}</span>
+                  )}
+                </button>
+                {isHovered && dayTournaments.length > 0 && (
+                  <div className="calendar-day-tooltip">
+                    <div className="tooltip-content">
+                      <div className="tooltip-header">
+                        {formatDate(dayInfo.date)} ({dayTournaments.length})
+                      </div>
+                      <div className="tooltip-tournaments">
+                        {dayTournaments.slice(0, 5).map((tournament) => (
+                          <div key={tournament.tournamentNo} className="tooltip-tournament">
+                            <div className="tooltip-tournament-name">{tournament.tournamentName}</div>
+                            <div className="tooltip-tournament-time">
+                              {tournament.localTournamentDate.split(" ")[1] || ""}
+                            </div>
+                            <div className="tooltip-tournament-location">{tournament.locationName}</div>
+                          </div>
+                        ))}
+                        {dayTournaments.length > 5 && (
+                          <div className="tooltip-more">
+                            {language === "hu" ? `+${dayTournaments.length - 5} további` : `+${dayTournaments.length - 5} more`}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 )}
-              </button>
+              </div>
             );
           })}
         </div>
