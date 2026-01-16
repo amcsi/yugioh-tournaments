@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import type { Tournament } from "../types/tournament";
 import { TournamentCard } from "./TournamentCard";
 import { useLanguage } from "../contexts/LanguageContext";
@@ -14,6 +14,7 @@ export function CalendarView({ tournaments }: CalendarViewProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [hoveredDate, setHoveredDate] = useState<Date | null>(null);
+  const selectedDateRef = useRef<HTMLDivElement>(null);
 
   // Group tournaments by date
   const tournamentsByDate = useMemo(() => {
@@ -132,6 +133,16 @@ export function CalendarView({ tournaments }: CalendarViewProps) {
 
   const selectedDateKey = selectedDate?.toISOString().split("T")[0];
   const selectedTournaments = selectedDateKey ? tournamentsByDate.get(selectedDateKey) || [] : [];
+
+  // Smooth scroll to selected date section when a date is selected
+  useEffect(() => {
+    if (selectedDate && selectedDateRef.current) {
+      selectedDateRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }, [selectedDate]);
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString(language === "hu" ? "hu-HU" : "en-US", {
@@ -256,7 +267,7 @@ export function CalendarView({ tournaments }: CalendarViewProps) {
       </div>
 
       {selectedDate && (
-        <div className="calendar-selected-date">
+        <div ref={selectedDateRef} className="calendar-selected-date">
           <h3 className="selected-date-title">
             {formatDate(selectedDate)}
             {selectedTournaments.length > 0 && (
