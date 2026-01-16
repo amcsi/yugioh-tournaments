@@ -1,4 +1,5 @@
 import type { Tournament } from "../types/tournament";
+import { translations } from "./translations";
 
 export type EventCategory = "Local" | "OTS" | "Regional" | "Nemzeti" | "Szabad Játék";
 
@@ -52,6 +53,21 @@ export function getEventCategoryColor(category: EventCategory): string {
   }
 }
 
-export function getEventCategoryLabel(category: EventCategory): string {
-  return category;
+export function getEventCategoryLabel(category: EventCategory, language: "hu" | "en" = "hu"): string {
+  const t = translations[language];
+  
+  switch (category) {
+    case "Local":
+      return t.categoryLocal;
+    case "OTS":
+      return t.categoryOTS;
+    case "Regional":
+      return t.categoryRegional;
+    case "Nemzeti":
+      return t.categoryNational;
+    case "Szabad Játék":
+      return t.categoryFreePlay;
+    default:
+      return category;
+  }
 }

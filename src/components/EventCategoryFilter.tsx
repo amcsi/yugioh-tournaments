@@ -1,5 +1,7 @@
 import type { Tournament } from "../types/tournament";
-import { getEventCategory, getEventCategoryColor, type EventCategory } from "../utils/eventCategory";
+import { getEventCategory, getEventCategoryColor, getEventCategoryLabel, type EventCategory } from "../utils/eventCategory";
+import { useLanguage } from "../contexts/LanguageContext";
+import { translations } from "../utils/translations";
 import "./EventCategoryFilter.css";
 
 interface EventCategoryFilterProps {
@@ -13,6 +15,8 @@ export function EventCategoryFilter({
   selectedCategories,
   onCategoryToggle,
 }: EventCategoryFilterProps) {
+  const { language } = useLanguage();
+  const t = translations[language];
   // Count tournaments per category
   const categoryCounts = new Map<EventCategory, number>();
   
@@ -25,7 +29,7 @@ export function EventCategoryFilter({
 
   return (
     <div className="event-category-filter">
-      <h3 className="filter-title">Szűrés esemény típus szerint</h3>
+      <h3 className="filter-title">{t.filterByEventType}</h3>
       <div className="category-buttons">
         {categories.map((category) => {
           const count = categoryCounts.get(category) || 0;
@@ -48,7 +52,7 @@ export function EventCategoryFilter({
                 className="category-badge"
                 style={{ backgroundColor: color }}
               >
-                {category}
+                {getEventCategoryLabel(category, language)}
               </span>
               <span className="category-count">({count})</span>
             </button>

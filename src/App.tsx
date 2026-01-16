@@ -4,11 +4,16 @@ import type { Tournament } from "./types/tournament";
 import { TournamentCard } from "./components/TournamentCard";
 import { StoreFilter } from "./components/StoreFilter";
 import { EventCategoryFilter } from "./components/EventCategoryFilter";
+import { LanguageSelector } from "./components/LanguageSelector";
 import { getEventCategory, type EventCategory } from "./utils/eventCategory";
 import { groupTournamentsByWeek, getWeekInfo, isCurrentWeek } from "./utils/weekUtils";
+import { useLanguage } from "./contexts/LanguageContext";
+import { translations } from "./utils/translations";
 import "./App.css";
 
 function App() {
+  const { language } = useLanguage();
+  const t = translations[language];
   const [allTournaments, setAllTournaments] = useState<Tournament[]>([]);
   const [selectedStores, setSelectedStores] = useState<Set<string>>(new Set());
   const [selectedEventCategories, setSelectedEventCategories] = useState<Set<EventCategory>>(new Set());
@@ -31,7 +36,7 @@ function App() {
         const response = await searchTournaments(request);
         setAllTournaments(response.result);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Nem sikerült betölteni a versenyeket");
+        setError(err instanceof Error ? err.message : (language === "hu" ? "Nem sikerült betölteni a versenyeket" : "Failed to load tournaments"));
         console.error("Error fetching tournaments:", err);
       } finally {
         setLoading(false);
@@ -129,27 +134,30 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>Yu-Gi-Oh! Versenyek Magyarországon</h1>
+        <div className="header-top">
+          <h1>{t.appTitle}</h1>
+          <LanguageSelector />
+        </div>
       </header>
 
       <main className="app-main">
         {loading && (
           <div className="loading">
             <div className="spinner"></div>
-            <p>Versenyek betöltése...</p>
+            <p>{t.loading}</p>
           </div>
         )}
 
         {error && (
           <div className="error">
             <p>⚠️ {error}</p>
-            <button onClick={() => window.location.reload()}>Újra</button>
+            <button onClick={() => window.location.reload()}>{t.errorRetry}</button>
           </div>
         )}
 
-        {!loading && !error && tournaments.length === 0 && (
+        {!loading && !error && tournaments.length === 0 && allTournaments.length === 0 && (
           <div className="empty">
-            <p>Nem található verseny az aktuális dátumtartományban.</p>
+            <p>{t.noTournaments}</p>
           </div>
         )}
 
@@ -168,18 +176,18 @@ function App() {
               onClearFilter={handleClearFilter}
             />
             <div className="tournaments-count">
-              {tournaments.length} verseny található
-              {(selectedStores.size > 0 || selectedEventCategories.size > 0) && ` (${allTournaments.length} összesen)`}
+              {tournaments.length} {t.tournamentsFound}
+              {(selectedStores.size > 0 || selectedEventCategories.size > 0) && ` (${allTournaments.length} ${t.tournamentsTotal})`}
             </div>
             <div className="tournaments-list">
               {tournaments.length > 0 ? (
                 (() => {
-                  const groupedByWeek = groupTournamentsByWeek(tournaments);
+                  const groupedByWeek = groupTournamentsByWeek(tournaments, language);
                   const result: JSX.Element[] = [];
                   
                   groupedByWeek.forEach((weekTournaments, weekKey) => {
                     const firstTournament = weekTournaments[0];
-                    const weekInfo = getWeekInfo(firstTournament.localTournamentDate);
+                    const weekInfo = getWeekInfo(firstTournament.localTournamentDate, language);
                     const isCurrent = isCurrentWeek(weekInfo.week, weekInfo.year);
                     
                     result.push(
@@ -200,7 +208,7 @@ function App() {
                 })()
               ) : (
                 <div className="empty">
-                  <p>Nincs verseny a kiválasztott szűrőkhöz.</p>
+                  <p>{t.noTournamentsFiltered}</p>
                 </div>
               )}
             </div>
@@ -210,8 +218,8 @@ function App() {
       <footer className="app-footer">
         <div className="footer-content">
           <div className="author-info">
-            <span className="author-name">Szerémi Attila</span>
-            <span className="author-nickname">(amcsi)</span>
+            <span className="author-name">{t.authorName}</span>
+            <span className="author-nickname">{t.authorNickname}</span>
           </div>
           <a
             href="https://github.com/amcsi/yugioh-tournaments"

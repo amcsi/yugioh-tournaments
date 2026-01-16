@@ -1,4 +1,6 @@
 import type { Tournament } from "../types/tournament";
+import { useLanguage } from "../contexts/LanguageContext";
+import { translations } from "../utils/translations";
 import "./StoreFilter.css";
 
 interface StoreFilterProps {
@@ -23,6 +25,8 @@ export function StoreFilter({
   onOtherStoresToggle,
   onClearFilter,
 }: StoreFilterProps) {
+  const { language } = useLanguage();
+  const t = translations[language];
   // Extract unique stores and count tournaments per store
   const storeMap = new Map<string, { count: number; type: string; city: string }>();
 
@@ -69,7 +73,7 @@ export function StoreFilter({
 
   return (
     <div className="store-filter">
-      <h3 className="filter-title">Szűrés bolt szerint</h3>
+      <h3 className="filter-title">{t.filterByStore}</h3>
       <div className="store-buttons">
         {mainStores.map((store) => (
           <button
@@ -90,14 +94,14 @@ export function StoreFilter({
             className={`store-button other-stores ${hasOtherSelected ? "active" : ""}`}
             onClick={onOtherStoresToggle}
           >
-            <span className="store-name">Egyéb boltok</span>
+            <span className="store-name">{t.otherStores}</span>
             <span className="store-count">({otherStores.length})</span>
           </button>
         )}
       </div>
       {selectedStores.size > 0 && (
         <button className="clear-filter" onClick={onClearFilter}>
-          Szűrés törlése
+          {t.clearFilter}
         </button>
       )}
     </div>

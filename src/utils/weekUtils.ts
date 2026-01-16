@@ -1,8 +1,8 @@
 /**
  * Get the week number and year for a date (ISO week, Monday as first day)
- * Returns format: "2026. 3. hét" (Year. Week. week)
+ * Returns format: "2026. 3. hét" (Year. Week. week) or "2026. Week 3" (Year. Week X)
  */
-export function getWeekInfo(dateString: string): { week: number; year: number; display: string } {
+export function getWeekInfo(dateString: string, language: "hu" | "en" = "hu"): { week: number; year: number; display: string } {
   try {
     // Parse date string "2026/01/15 15:00"
     const [datePart] = dateString.split(" ");
@@ -15,7 +15,9 @@ export function getWeekInfo(dateString: string): { week: number; year: number; d
     return {
       week: weekInfo.week,
       year: weekInfo.year,
-      display: `${weekInfo.year}. ${weekInfo.week}. hét`,
+      display: language === "hu" 
+        ? `${weekInfo.year}. ${weekInfo.week}. hét`
+        : `${weekInfo.year}. Week ${weekInfo.week}`,
     };
   } catch (error) {
     // Fallback
@@ -86,11 +88,12 @@ function getISOWeek(date: Date): { week: number; year: number } {
  */
 export function groupTournamentsByWeek<T extends { localTournamentDate: string }>(
   tournaments: T[],
+  language: "hu" | "en" = "hu",
 ): Map<string, T[]> {
   const grouped = new Map<string, T[]>();
   
   tournaments.forEach((tournament) => {
-    const weekInfo = getWeekInfo(tournament.localTournamentDate);
+    const weekInfo = getWeekInfo(tournament.localTournamentDate, language);
     const weekKey = `${weekInfo.year}-W${weekInfo.week.toString().padStart(2, "0")}`;
     
     if (!grouped.has(weekKey)) {

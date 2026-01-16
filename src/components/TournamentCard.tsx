@@ -1,5 +1,7 @@
 import type { Tournament } from "../types/tournament";
-import { getEventCategory, getEventCategoryColor } from "../utils/eventCategory";
+import { getEventCategory, getEventCategoryColor, getEventCategoryLabel } from "../utils/eventCategory";
+import { useLanguage } from "../contexts/LanguageContext";
+import { translations } from "../utils/translations";
 import "./TournamentCard.css";
 
 interface TournamentCardProps {
@@ -7,6 +9,9 @@ interface TournamentCardProps {
 }
 
 export function TournamentCard({ tournament }: TournamentCardProps) {
+  const { language } = useLanguage();
+  const t = translations[language];
+  
   const formatDate = (dateString: string) => {
     if (!dateString) return "N/A";
     // Date format is "2026/01/15 15:00"
@@ -24,11 +29,13 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
       // Create a date object (month is 0-indexed in JavaScript Date)
       const date = new Date(year, month - 1, day);
       
-      // Get day of week in Hungarian
-      const dayNames = ["vasárnap", "hétfő", "kedd", "szerda", "csütörtök", "péntek", "szombat"];
+      // Get day of week based on language
+      const dayNames = language === "hu"
+        ? ["vasárnap", "hétfő", "kedd", "szerda", "csütörtök", "péntek", "szombat"]
+        : ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
       const dayName = dayNames[date.getDay()];
       
-      // Format: "2026/01/15 (szerda) - 15:00"
+      // Format: "2026/01/15 (szerda) - 15:00" or "2026/01/15 (Wednesday) - 15:00"
       if (timePart) {
         return `${datePart} (${dayName}) - ${timePart}`;
       }
@@ -42,18 +49,18 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
   const getStructureLabel = (structure: string) => {
     switch (structure) {
       case "FREE":
-        return "Szabad játék";
+        return t.freePlay;
       case "SWISSDRAW":
-        return "Svájci rendszer";
+        return t.swissDraw;
       case "SINGLE_ELIMINATION":
-        return "Egyenes kiesés";
+        return t.singleElimination;
       default:
         return structure;
     }
   };
 
   const getReserveStateLabel = (state: string) => {
-    return state === "RESERVEABLE" ? "Foglalás lehetséges" : "Nincs foglalás";
+    return state === "RESERVEABLE" ? t.reservationsAvailable : t.noReservations;
   };
 
   const getStoreType = (storeName: string): string => {
@@ -79,6 +86,7 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
   const storeType = getStoreType(tournament.storeName || tournament.locationName);
   const eventCategory = getEventCategory(tournament);
   const eventCategoryColor = getEventCategoryColor(eventCategory);
+  const eventCategoryLabel = getEventCategoryLabel(eventCategory, language);
 
   return (
     <div className="tournament-card">
@@ -89,7 +97,7 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
             className="event-category-badge"
             style={{ backgroundColor: eventCategoryColor }}
           >
-            {eventCategory}
+            {eventCategoryLabel}
           </span>
         </div>
         <div className="tournament-header-right">
@@ -100,17 +108,17 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
 
       <div className="tournament-info">
         <div className="info-row">
-          <span className="info-label">Esemény típusa:</span>
+          <span className="info-label">{t.eventType}</span>
           <span className="info-value">{tournament.eventName}</span>
         </div>
 
         <div className="info-row">
-          <span className="info-label">Rendszer:</span>
+          <span className="info-label">{t.structure}</span>
           <span className="info-value">{getStructureLabel(tournament.structure)}</span>
         </div>
 
         <div className="info-row">
-          <span className="info-label">Dátum és idő:</span>
+          <span className="info-label">{t.dateAndTime}</span>
           <span className="info-value">
             {formatDateWithDay(tournament.localTournamentDate)}
             {tournament.localTournamentDateEnd && ` - ${formatDateWithDay(tournament.localTournamentDateEnd)}`}
@@ -118,19 +126,19 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
         </div>
 
         <div className="info-row">
-          <span className="info-label">Jelentkezés:</span>
+          <span className="info-label">{t.entry}</span>
           <span className="info-value">
             {formatDate(tournament.localEntryStartDate)} - {formatDate(tournament.localEntryEndDate)}
           </span>
         </div>
 
         <div className="info-row">
-          <span className="info-label">Helyszín:</span>
+          <span className="info-label">{t.location}</span>
           <span className="info-value">{tournament.locationName}</span>
         </div>
 
         <div className="info-row">
-          <span className="info-label">Cím:</span>
+          <span className="info-label">{t.address}</span>
           <span className="info-value">
             <a
               href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(tournament.address)}`}
@@ -145,24 +153,24 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
 
         {tournament.location.telNo && (
           <div className="info-row">
-            <span className="info-label">Telefon:</span>
+            <span className="info-label">{t.phone}</span>
             <span className="info-value">{tournament.location.telNo}</span>
           </div>
         )}
 
         <div className="info-row">
-          <span className="info-label">Játékosok:</span>
+          <span className="info-label">{t.players}</span>
           <span className="info-value">
-            {tournament.localPlayerNumber} / {tournament.forecastPlayerNumber} bejelentkezve
+            {tournament.localPlayerNumber} / {tournament.forecastPlayerNumber} {t.registered}
           </span>
         </div>
 
         <div className="info-row">
-          <span className="info-label">Foglalások:</span>
+          <span className="info-label">{t.reservations}</span>
           <span className={`info-value ${tournament.reserveState === "RESERVEABLE" ? "reservable" : ""}`}>
             {getReserveStateLabel(tournament.reserveState)}
             {tournament.reserveState === "RESERVEABLE" && tournament.restReservePlayerNumber > 0 && (
-              <span> ({tournament.restReservePlayerNumber} hely elérhető)</span>
+              <span> ({tournament.restReservePlayerNumber} {t.spotsAvailable})</span>
             )}
           </span>
         </div>
@@ -175,7 +183,7 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
               rel="noopener noreferrer"
               className="event-link"
             >
-              További információ →
+              {t.moreInformation} →
             </a>
           </div>
         )}
