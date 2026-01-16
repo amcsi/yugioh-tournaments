@@ -160,6 +160,39 @@
   font-size: 1.1rem;
 }
 
+.view-mode-selector {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  justify-content: center;
+}
+
+.view-mode-button {
+  padding: 0.75rem 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #aaa;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.view-mode-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(100, 108, 255, 0.5);
+  color: #fff;
+}
+
+.view-mode-button.active {
+  background: linear-gradient(135deg, #646cff 0%, #535bf2 100%);
+  border-color: #646cff;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(100, 108, 255, 0.3);
+}
+
 .tournaments-count {
   margin-bottom: 2rem;
   padding: 1rem;

@@ -5,6 +5,7 @@ import { TournamentCard } from "./components/TournamentCard";
 import { StoreFilter } from "./components/StoreFilter";
 import { EventCategoryFilter } from "./components/EventCategoryFilter";
 import { LanguageSelector } from "./components/LanguageSelector";
+import { CalendarView } from "./components/CalendarView";
 import { getEventCategory, type EventCategory } from "./utils/eventCategory";
 import { groupTournamentsByWeek, getWeekInfo, isCurrentWeek } from "./utils/weekUtils";
 import { useLanguage } from "./contexts/LanguageContext";
@@ -17,6 +18,7 @@ function App() {
   const [allTournaments, setAllTournaments] = useState<Tournament[]>([]);
   const [selectedStores, setSelectedStores] = useState<Set<string>>(new Set());
   const [selectedEventCategories, setSelectedEventCategories] = useState<Set<EventCategory>>(new Set());
+  const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const hasFetchedRef = useRef(false);
@@ -163,6 +165,20 @@ function App() {
 
         {!loading && !error && allTournaments.length > 0 && (
           <>
+            <div className="view-mode-selector">
+              <button
+                className={`view-mode-button ${viewMode === "list" ? "active" : ""}`}
+                onClick={() => setViewMode("list")}
+              >
+                {language === "hu" ? "Lista" : "List"}
+              </button>
+              <button
+                className={`view-mode-button ${viewMode === "calendar" ? "active" : ""}`}
+                onClick={() => setViewMode("calendar")}
+              >
+                {language === "hu" ? "Naptár" : "Calendar"}
+              </button>
+            </div>
             <EventCategoryFilter
               tournaments={allTournaments}
               selectedCategories={selectedEventCategories}
@@ -179,39 +195,43 @@ function App() {
               {tournaments.length} {t.tournamentsFound}
               {(selectedStores.size > 0 || selectedEventCategories.size > 0) && ` (${allTournaments.length} ${t.tournamentsTotal})`}
             </div>
-            <div className="tournaments-list">
-              {tournaments.length > 0 ? (
-                (() => {
-                  const groupedByWeek = groupTournamentsByWeek(tournaments, language);
-                  const result: JSX.Element[] = [];
-                  
-                  groupedByWeek.forEach((weekTournaments, weekKey) => {
-                    const firstTournament = weekTournaments[0];
-                    const weekInfo = getWeekInfo(firstTournament.localTournamentDate, language);
-                    const isCurrent = isCurrentWeek(weekInfo.week, weekInfo.year);
+            {viewMode === "list" ? (
+              <div className="tournaments-list">
+                {tournaments.length > 0 ? (
+                  (() => {
+                    const groupedByWeek = groupTournamentsByWeek(tournaments, language);
+                    const result: JSX.Element[] = [];
                     
-                    result.push(
-                      <div key={weekKey} className="week-section">
-                        {!isCurrent && (
-                          <div className="week-header">
-                            <span className="week-label">{weekInfo.display}</span>
-                          </div>
-                        )}
-                        {weekTournaments.map((tournament) => (
-                          <TournamentCard key={tournament.tournamentNo} tournament={tournament} />
-                        ))}
-                      </div>
-                    );
-                  });
-                  
-                  return result;
-                })()
-              ) : (
-                <div className="empty">
-                  <p>{t.noTournamentsFiltered}</p>
-                </div>
-              )}
-            </div>
+                    groupedByWeek.forEach((weekTournaments, weekKey) => {
+                      const firstTournament = weekTournaments[0];
+                      const weekInfo = getWeekInfo(firstTournament.localTournamentDate, language);
+                      const isCurrent = isCurrentWeek(weekInfo.week, weekInfo.year);
+                      
+                      result.push(
+                        <div key={weekKey} className="week-section">
+                          {!isCurrent && (
+                            <div className="week-header">
+                              <span className="week-label">{weekInfo.display}</span>
+                            </div>
+                          )}
+                          {weekTournaments.map((tournament) => (
+                            <TournamentCard key={tournament.tournamentNo} tournament={tournament} />
+                          ))}
+                        </div>
+                      );
+                    });
+                    
+                    return result;
+                  })()
+                ) : (
+                  <div className="empty">
+                    <p>{t.noTournamentsFiltered}</p>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <CalendarView tournaments={tournaments} />
+            )}
           </>
         )}
       </main>
