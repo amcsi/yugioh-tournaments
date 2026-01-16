@@ -122,6 +122,14 @@
   box-shadow: 0 2px 8px rgba(100, 108, 255, 0.3);
 }
 
+.calendar-day.weekend:not(.selected):not(.today) {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.calendar-day.weekend.today {
+  background: rgba(100, 108, 255, 0.15);
+}
+
 .calendar-day-number {
   font-size: 1rem;
   font-weight: 500;

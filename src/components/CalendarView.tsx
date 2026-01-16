@@ -159,11 +159,14 @@ export function CalendarView({ tournaments }: CalendarViewProps) {
             const dateKey = dayInfo.date.toISOString().split("T")[0];
             const isSelected = selectedDateKey === dateKey;
             const isToday = dateKey === new Date().toISOString().split("T")[0];
+            // Check if it's a weekend (Saturday = 5, Sunday = 6 in the grid, since we start with Monday)
+            const dayOfWeek = dayInfo.date.getDay();
+            const isWeekend = dayOfWeek === 0 || dayOfWeek === 6; // Sunday or Saturday
             
             return (
               <button
                 key={index}
-                className={`calendar-day ${!dayInfo.isCurrentMonth ? "other-month" : ""} ${isSelected ? "selected" : ""} ${isToday ? "today" : ""}`}
+                className={`calendar-day ${!dayInfo.isCurrentMonth ? "other-month" : ""} ${isSelected ? "selected" : ""} ${isToday ? "today" : ""} ${isWeekend ? "weekend" : ""}`}
                 onClick={() => {
                   if (dayInfo.isCurrentMonth) {
                     setSelectedDate(dayInfo.date);
