@@ -165,6 +165,18 @@ function App() {
 
         {!loading && !error && allTournaments.length > 0 && (
           <>
+            <EventCategoryFilter
+              tournaments={allTournaments}
+              selectedCategories={selectedEventCategories}
+              onCategoryToggle={handleEventCategoryToggle}
+            />
+            <StoreFilter
+              tournaments={allTournaments}
+              selectedStores={selectedStores}
+              onStoreToggle={handleStoreToggle}
+              onOtherStoresToggle={handleOtherStoresToggle}
+              onClearFilter={handleClearFilter}
+            />
             <div className="view-mode-selector">
               <button
                 className={`view-mode-button ${viewMode === "list" ? "active" : ""}`}
@@ -179,18 +191,6 @@ function App() {
                 {language === "hu" ? "Naptár" : "Calendar"}
               </button>
             </div>
-            <EventCategoryFilter
-              tournaments={allTournaments}
-              selectedCategories={selectedEventCategories}
-              onCategoryToggle={handleEventCategoryToggle}
-            />
-            <StoreFilter
-              tournaments={allTournaments}
-              selectedStores={selectedStores}
-              onStoreToggle={handleStoreToggle}
-              onOtherStoresToggle={handleOtherStoresToggle}
-              onClearFilter={handleClearFilter}
-            />
             <div className="tournaments-count">
               {tournaments.length} {t.tournamentsFound}
               {(selectedStores.size > 0 || selectedEventCategories.size > 0) && ` (${allTournaments.length} ${t.tournamentsTotal})`}
