@@ -75,7 +75,13 @@
 .calendar-day-wrapper {
   position: relative;
   width: 100%;
-  aspect-ratio: 1;
+  aspect-ratio: 2; /* Height is half the width (2:1 ratio) */
+}
+
+@media (max-width: 768px) {
+  .calendar-day-wrapper {
+    aspect-ratio: 1; /* Keep square on mobile */
+  }
 }
 
 .calendar-weekday {
