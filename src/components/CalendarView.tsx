@@ -4,6 +4,7 @@ import { TournamentCard } from "./TournamentCard";
 import { useLanguage } from "../contexts/LanguageContext";
 import { getEventCategory, getEventCategoryColor, getEventCategoryLabel, type EventCategory } from "../utils/eventCategory";
 import { formatDateKey, getTodayDateKey } from "../utils/dateUtils";
+import { groupTournamentsByWeek, getWeekInfo, isCurrentWeek } from "../utils/weekUtils";
 import "./CalendarView.css";
 
 interface CalendarViewProps {
@@ -196,7 +197,12 @@ export function CalendarView({ tournaments }: CalendarViewProps) {
                   className={`calendar-day ${!dayInfo.isCurrentMonth ? "other-month" : ""} ${isSelected ? "selected" : ""} ${isToday ? "today" : ""} ${isWeekend ? "weekend" : ""}`}
                   onClick={() => {
                     if (dayInfo.isCurrentMonth) {
-                      setSelectedDate(dayInfo.date);
+                      // Toggle selection: if clicking the same date, deselect it
+                      if (isSelected) {
+                        setSelectedDate(null);
+                      } else {
+                        setSelectedDate(dayInfo.date);
+                      }
                     }
                   }}
                   onMouseEnter={(e) => {
@@ -272,7 +278,7 @@ export function CalendarView({ tournaments }: CalendarViewProps) {
         </div>
       </div>
 
-      {selectedDate && (
+      {selectedDate ? (
         <div ref={selectedDateRef} className="calendar-selected-date">
           <h3 className="selected-date-title">
             {formatDate(selectedDate)}
@@ -289,6 +295,42 @@ export function CalendarView({ tournaments }: CalendarViewProps) {
           ) : (
             <div className="selected-date-empty">
               <p>{language === "hu" ? "Nincs verseny ezen a napon." : "No tournaments on this date."}</p>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="calendar-all-tournaments">
+          {tournaments.length > 0 ? (
+            <div className="tournaments-list">
+              {(() => {
+                const groupedByWeek = groupTournamentsByWeek(tournaments, language);
+                const result: JSX.Element[] = [];
+                
+                groupedByWeek.forEach((weekTournaments, weekKey) => {
+                  const firstTournament = weekTournaments[0];
+                  const weekInfo = getWeekInfo(firstTournament.localTournamentDate, language);
+                  const isCurrent = isCurrentWeek(weekInfo.week, weekInfo.year);
+                  
+                  result.push(
+                    <div key={weekKey} className="week-section">
+                      {!isCurrent && (
+                        <div className="week-header">
+                          <span className="week-label">{weekInfo.display}</span>
+                        </div>
+                      )}
+                      {weekTournaments.map((tournament) => (
+                        <TournamentCard key={tournament.tournamentNo} tournament={tournament} />
+                      ))}
+                    </div>
+                  );
+                });
+                
+                return result;
+              })()}
+            </div>
+          ) : (
+            <div className="selected-date-empty">
+              <p>{language === "hu" ? "Nincs verseny a kiválasztott szűrőkkel." : "No tournaments match the selected filters."}</p>
             </div>
           )}
         </div>

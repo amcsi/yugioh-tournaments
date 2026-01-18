@@ -119,22 +119,28 @@
   opacity: 0.3;
 }
 
-.calendar-day.today {
+.calendar-day.today:not(.selected) {
   border-color: #646cff;
   background: rgba(100, 108, 255, 0.1);
 }
 
 .calendar-day.selected {
-  background: linear-gradient(135deg, #646cff 0%, #535bf2 100%);
-  border-color: #646cff;
+  background: linear-gradient(135deg, #646cff 0%, #535bf2 100%) !important;
+  border-color: #646cff !important;
   box-shadow: 0 2px 8px rgba(100, 108, 255, 0.3);
+  color: #fff;
+}
+
+.calendar-day.selected .calendar-day-number {
+  color: #fff;
+  font-weight: 600;
 }
 
 .calendar-day.weekend:not(.selected):not(.today) {
   background: rgba(0, 0, 0, 0.2);
 }
 
-.calendar-day.weekend.today {
+.calendar-day.weekend.today:not(.selected) {
   background: rgba(100, 108, 255, 0.15);
 }
 
@@ -305,6 +311,10 @@
 }
 
 .calendar-selected-date {
+  margin-top: 2rem;
+}
+
+.calendar-all-tournaments {
   margin-top: 2rem;
 }
 
