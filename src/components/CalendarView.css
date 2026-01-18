@@ -300,13 +300,7 @@
 
 @media (max-width: 768px) {
   .calendar-day-tooltip {
-    min-width: 375px;
-    max-width: 450px;
-  }
-
-  .tooltip-content {
-    padding: 0.75rem;
-    max-height: 450px;
+    display: none !important;
   }
 }
 

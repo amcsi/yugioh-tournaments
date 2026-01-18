@@ -199,12 +199,17 @@ export function CalendarView({ tournaments }: CalendarViewProps) {
                       setSelectedDate(dayInfo.date);
                     }
                   }}
-                  onMouseEnter={() => {
-                    if (dayInfo.isCurrentMonth && dayTournaments.length > 0) {
+                  onMouseEnter={(e) => {
+                    // Only show tooltip on non-touch devices
+                    if (!('ontouchstart' in window) && dayInfo.isCurrentMonth && dayTournaments.length > 0) {
                       setHoveredDate(dayInfo.date);
                     }
                   }}
                   onMouseLeave={() => setHoveredDate(null)}
+                  onTouchStart={() => {
+                    // Prevent tooltip on touch devices
+                    setHoveredDate(null);
+                  }}
                   disabled={!dayInfo.isCurrentMonth}
                 >
                   <span className="calendar-day-number">{dayInfo.date.getDate()}</span>
