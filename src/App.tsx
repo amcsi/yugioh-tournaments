@@ -22,7 +22,7 @@ function App() {
   // Load view mode preference from localStorage
   const [viewMode, setViewModeState] = useState<"list" | "calendar">(() => {
     const saved = localStorage.getItem("viewMode");
-    return (saved === "list" || saved === "calendar") ? saved : "list";
+    return (saved === "list" || saved === "calendar") ? saved : "calendar";
   });
   
   // Save view mode preference to localStorage when it changes
