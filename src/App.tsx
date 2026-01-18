@@ -18,7 +18,19 @@ function App() {
   const [allTournaments, setAllTournaments] = useState<Tournament[]>([]);
   const [selectedStores, setSelectedStores] = useState<Set<string>>(new Set());
   const [selectedEventCategories, setSelectedEventCategories] = useState<Set<EventCategory>>(new Set());
-  const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
+  
+  // Load view mode preference from localStorage
+  const [viewMode, setViewModeState] = useState<"list" | "calendar">(() => {
+    const saved = localStorage.getItem("viewMode");
+    return (saved === "list" || saved === "calendar") ? saved : "list";
+  });
+  
+  // Save view mode preference to localStorage when it changes
+  const setViewMode = (mode: "list" | "calendar") => {
+    setViewModeState(mode);
+    localStorage.setItem("viewMode", mode);
+  };
+  
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const hasFetchedRef = useRef(false);
