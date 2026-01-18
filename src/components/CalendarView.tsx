@@ -5,6 +5,7 @@ import { useLanguage } from "../contexts/LanguageContext";
 import { getEventCategory, getEventCategoryColor, getEventCategoryLabel, type EventCategory } from "../utils/eventCategory";
 import { formatDateKey, getTodayDateKey } from "../utils/dateUtils";
 import { groupTournamentsByWeek, getWeekInfo, isCurrentWeek } from "../utils/weekUtils";
+import { translations } from "../utils/translations";
 import "./CalendarView.css";
 
 interface CalendarViewProps {
@@ -13,6 +14,7 @@ interface CalendarViewProps {
 
 export function CalendarView({ tournaments }: CalendarViewProps) {
   const { language } = useLanguage();
+  const t = translations[language];
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [hoveredDate, setHoveredDate] = useState<Date | null>(null);
@@ -169,7 +171,7 @@ export function CalendarView({ tournaments }: CalendarViewProps) {
           </button>
         </div>
         <button className="calendar-today-button" onClick={goToToday}>
-          {language === "hu" ? "Mai nap" : "Today"}
+          {t.today}
         </button>
         
         <div className="calendar-grid">
@@ -265,7 +267,7 @@ export function CalendarView({ tournaments }: CalendarViewProps) {
                         })}
                         {dayTournaments.length > 5 && (
                           <div className="tooltip-more">
-                            {language === "hu" ? `+${dayTournaments.length - 5} további` : `+${dayTournaments.length - 5} more`}
+                            +{dayTournaments.length - 5} {t.tooltipMoreTournaments}
                           </div>
                         )}
                       </div>
@@ -294,7 +296,7 @@ export function CalendarView({ tournaments }: CalendarViewProps) {
             </div>
           ) : (
             <div className="selected-date-empty">
-              <p>{language === "hu" ? "Nincs verseny ezen a napon." : "No tournaments on this date."}</p>
+              <p>{t.noTournamentsOnDate}</p>
             </div>
           )}
         </div>
@@ -330,7 +332,7 @@ export function CalendarView({ tournaments }: CalendarViewProps) {
             </div>
           ) : (
             <div className="selected-date-empty">
-              <p>{language === "hu" ? "Nincs verseny a kiválasztott szűrőkkel." : "No tournaments match the selected filters."}</p>
+              <p>{t.noTournamentsWithFilters}</p>
             </div>
           )}
         </div>

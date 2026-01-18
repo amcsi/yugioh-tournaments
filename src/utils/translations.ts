@@ -54,6 +54,19 @@ export interface Translations {
   // Footer
   authorName: string;
   authorNickname: string;
+  
+  // Calendar view
+  today: string;
+  noTournamentsOnDate: string;
+  noTournamentsWithFilters: string;
+  tooltipMoreTournaments: string;
+  
+  // View modes
+  listView: string;
+  calendarView: string;
+  
+  // Error messages
+  failedToLoadTournaments: string;
 }
 
 export const translations: Record<Language, Translations> = {
@@ -94,6 +107,13 @@ export const translations: Record<Language, Translations> = {
     categoryFreePlay: "Szabad Játék",
     authorName: "Szerémi Attila",
     authorNickname: "(amcsi)",
+    today: "Mai nap",
+    noTournamentsOnDate: "Nincs verseny ezen a napon.",
+    noTournamentsWithFilters: "Nincs verseny a kiválasztott szűrőkkel.",
+    tooltipMoreTournaments: "további",
+    listView: "Lista",
+    calendarView: "Naptár",
+    failedToLoadTournaments: "Nem sikerült betölteni a versenyeket",
   },
   en: {
     appTitle: "Yu-Gi-Oh! Tournaments in Hungary",
@@ -132,6 +152,13 @@ export const translations: Record<Language, Translations> = {
     categoryFreePlay: "Free Play",
     authorName: "Szerémi Attila",
     authorNickname: "(amcsi)",
+    today: "Today",
+    noTournamentsOnDate: "No tournaments on this date.",
+    noTournamentsWithFilters: "No tournaments match the selected filters.",
+    tooltipMoreTournaments: "more",
+    listView: "List",
+    calendarView: "Calendar",
+    failedToLoadTournaments: "Failed to load tournaments",
   },
 };
 

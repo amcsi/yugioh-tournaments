@@ -50,7 +50,7 @@ function App() {
         const response = await searchTournaments(request);
         setAllTournaments(response.result);
       } catch (err) {
-        setError(err instanceof Error ? err.message : (language === "hu" ? "Nem sikerült betölteni a versenyeket" : "Failed to load tournaments"));
+        setError(err instanceof Error ? err.message : t.failedToLoadTournaments);
         console.error("Error fetching tournaments:", err);
       } finally {
         setLoading(false);
@@ -194,13 +194,13 @@ function App() {
                 className={`view-mode-button ${viewMode === "list" ? "active" : ""}`}
                 onClick={() => setViewMode("list")}
               >
-                {language === "hu" ? "Lista" : "List"}
+                {t.listView}
               </button>
               <button
                 className={`view-mode-button ${viewMode === "calendar" ? "active" : ""}`}
                 onClick={() => setViewMode("calendar")}
               >
-                {language === "hu" ? "Naptár" : "Calendar"}
+                {t.calendarView}
               </button>
             </div>
             <div className="tournaments-count">
