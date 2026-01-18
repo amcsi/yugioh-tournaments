@@ -3,6 +3,7 @@ import type { Tournament } from "../types/tournament";
 import { TournamentCard } from "./TournamentCard";
 import { useLanguage } from "../contexts/LanguageContext";
 import { getEventCategory, getEventCategoryColor, getEventCategoryLabel, type EventCategory } from "../utils/eventCategory";
+import { formatDateKey, getTodayDateKey } from "../utils/dateUtils";
 import "./CalendarView.css";
 
 interface CalendarViewProps {
@@ -26,7 +27,7 @@ export function CalendarView({ tournaments }: CalendarViewProps) {
         const [datePart] = tournament.localTournamentDate.split(" ");
         const [year, month, day] = datePart.split("/").map(Number);
         const date = new Date(year, month - 1, day);
-        const dateKey = date.toISOString().split("T")[0]; // YYYY-MM-DD
+        const dateKey = formatDateKey(date); // YYYY-MM-DD using local time
         
         if (!grouped.has(dateKey)) {
           grouped.set(dateKey, []);
@@ -71,7 +72,7 @@ export function CalendarView({ tournaments }: CalendarViewProps) {
     const prevMonthLastDay = new Date(year, month, 0).getDate();
     for (let i = startDay - 1; i >= 0; i--) {
       const date = new Date(year, month - 1, prevMonthLastDay - i);
-      const dateKey = date.toISOString().split("T")[0];
+      const dateKey = formatDateKey(date);
       days.push({
         date,
         isCurrentMonth: false,
@@ -82,7 +83,7 @@ export function CalendarView({ tournaments }: CalendarViewProps) {
     // Current month days
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(year, month, day);
-      const dateKey = date.toISOString().split("T")[0];
+      const dateKey = formatDateKey(date);
       days.push({
         date,
         isCurrentMonth: true,
@@ -94,7 +95,7 @@ export function CalendarView({ tournaments }: CalendarViewProps) {
     const remainingDays = 42 - days.length; // 6 weeks * 7 days
     for (let day = 1; day <= remainingDays; day++) {
       const date = new Date(year, month + 1, day);
-      const dateKey = date.toISOString().split("T")[0];
+      const dateKey = formatDateKey(date);
       days.push({
         date,
         isCurrentMonth: false,
@@ -131,7 +132,7 @@ export function CalendarView({ tournaments }: CalendarViewProps) {
     setSelectedDate(null);
   };
 
-  const selectedDateKey = selectedDate?.toISOString().split("T")[0];
+  const selectedDateKey = selectedDate ? formatDateKey(selectedDate) : null;
   const selectedTournaments = selectedDateKey ? tournamentsByDate.get(selectedDateKey) || [] : [];
 
   // Smooth scroll to selected date section when a date is selected
@@ -180,10 +181,10 @@ export function CalendarView({ tournaments }: CalendarViewProps) {
           
           {/* Calendar days */}
           {calendarDays.map((dayInfo, index) => {
-            const dateKey = dayInfo.date.toISOString().split("T")[0];
+            const dateKey = formatDateKey(dayInfo.date);
             const isSelected = selectedDateKey === dateKey;
-            const isToday = dateKey === new Date().toISOString().split("T")[0];
-            const isHovered = hoveredDate?.toISOString().split("T")[0] === dateKey;
+            const isToday = dateKey === getTodayDateKey();
+            const isHovered = hoveredDate ? formatDateKey(hoveredDate) === dateKey : false;
             // Check if it's a weekend (Saturday = 5, Sunday = 6 in the grid, since we start with Monday)
             const dayOfWeek = dayInfo.date.getDay();
             const isWeekend = dayOfWeek === 0 || dayOfWeek === 6; // Sunday or Saturday

@@ -3,6 +3,7 @@ import type {
   TournamentSearchRequest,
   TournamentSearchResponse,
 } from "../types/tournament";
+import { formatDateKey } from "../utils/dateUtils";
 
 const API_URL =
   "https://cardgame-network.konami.net/mt/user/rest/tournament/EU/tournament_gsearch";
@@ -77,10 +78,10 @@ export function createTournamentSearchRequest(): TournamentSearchRequest {
   const startDate = new Date(now);
   startDate.setHours(0, 0, 0, 0);
   
-  // Set webOpenDate to yesterday at 23:00 UTC (same as sample)
+  // Set webOpenDate to yesterday at 23:00 local time
   const webOpenDate = new Date(startDate);
   webOpenDate.setDate(webOpenDate.getDate() - 1);
-  webOpenDate.setUTCHours(23, 0, 0, 0);
+  webOpenDate.setHours(23, 0, 0, 0);
 
   return {
     keyword: "",
