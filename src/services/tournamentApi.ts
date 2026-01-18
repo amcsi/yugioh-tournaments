@@ -3,7 +3,6 @@ import type {
   TournamentSearchRequest,
   TournamentSearchResponse,
 } from "../types/tournament";
-import { formatDateKey } from "../utils/dateUtils";
 
 const API_URL =
   "https://cardgame-network.konami.net/mt/user/rest/tournament/EU/tournament_gsearch";

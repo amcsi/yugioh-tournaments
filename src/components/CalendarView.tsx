@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useState, useMemo, useRef, useEffect, type JSX } from 'react';
 import type { Tournament } from "../types/tournament";
 import { TournamentCard } from "./TournamentCard";
 import { useLanguage } from "../contexts/LanguageContext";
@@ -207,7 +207,7 @@ export function CalendarView({ tournaments }: CalendarViewProps) {
                       }
                     }
                   }}
-                  onMouseEnter={(e) => {
+                  onMouseEnter={() => {
                     // Only show tooltip on non-touch devices
                     if (!('ontouchstart' in window) && dayInfo.isCurrentMonth && dayTournaments.length > 0) {
                       setHoveredDate(dayInfo.date);
