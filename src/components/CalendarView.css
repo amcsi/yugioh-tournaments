@@ -75,7 +75,7 @@
 .calendar-day-wrapper {
   position: relative;
   width: 100%;
-  aspect-ratio: 2; /* Height is half the width (2:1 ratio) */
+  aspect-ratio: 1.5; /* Height is 1.5x the width (2:1 ratio) */
 }
 
 @media (max-width: 768px) {
