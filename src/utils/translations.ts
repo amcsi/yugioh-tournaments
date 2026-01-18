@@ -62,8 +62,7 @@ export interface Translations {
   tooltipMoreTournaments: string;
   
   // View modes
-  listView: string;
-  calendarView: string;
+  calendarToggle: string;
   
   // Error messages
   failedToLoadTournaments: string;
@@ -111,8 +110,7 @@ export const translations: Record<Language, Translations> = {
     noTournamentsOnDate: "Nincs verseny ezen a napon.",
     noTournamentsWithFilters: "Nincs verseny a kiválasztott szűrőkkel.",
     tooltipMoreTournaments: "további",
-    listView: "Lista",
-    calendarView: "Naptár",
+    calendarToggle: "Naptár",
     failedToLoadTournaments: "Nem sikerült betölteni a versenyeket",
   },
   en: {
@@ -156,8 +154,7 @@ export const translations: Record<Language, Translations> = {
     noTournamentsOnDate: "No tournaments on this date.",
     noTournamentsWithFilters: "No tournaments match the selected filters.",
     tooltipMoreTournaments: "more",
-    listView: "List",
-    calendarView: "Calendar",
+    calendarToggle: "Calendar",
     failedToLoadTournaments: "Failed to load tournaments",
   },
 };

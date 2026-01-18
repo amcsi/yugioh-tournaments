@@ -189,23 +189,18 @@ function App() {
               onOtherStoresToggle={handleOtherStoresToggle}
               onClearFilter={handleClearFilter}
             />
-            <div className="view-mode-selector">
-              <button
-                className={`view-mode-button ${viewMode === "list" ? "active" : ""}`}
-                onClick={() => setViewMode("list")}
-              >
-                {t.listView}
-              </button>
-              <button
-                className={`view-mode-button ${viewMode === "calendar" ? "active" : ""}`}
-                onClick={() => setViewMode("calendar")}
-              >
-                {t.calendarView}
-              </button>
-            </div>
             <div className="tournaments-count">
               {tournaments.length} {t.tournamentsFound}
               {(selectedStores.size > 0 || selectedEventCategories.size > 0) && ` (${allTournaments.length} ${t.tournamentsTotal})`}
+            </div>
+            <div className="view-mode-selector">
+              <button
+                className={`view-mode-button ${viewMode === "calendar" ? "active" : ""}`}
+                onClick={() => setViewMode(viewMode === "calendar" ? "list" : "calendar")}
+                aria-pressed={viewMode === "calendar"}
+              >
+                {t.calendarToggle}
+              </button>
             </div>
             {viewMode === "list" ? (
               <div className="tournaments-list">
