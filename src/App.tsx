@@ -45,7 +45,13 @@ function App() {
     };
 
     const handleClickOutside = (e: MouseEvent) => {
-      if (filtersPanelRef.current && !filtersPanelRef.current.contains(e.target as Node)) {
+      const target = e.target as Node;
+      // Don't close if clicking on the toggle button
+      if (filtersToggleButtonRef.current && filtersToggleButtonRef.current.contains(target)) {
+        return;
+      }
+      // Close if clicking outside the panel
+      if (filtersPanelRef.current && !filtersPanelRef.current.contains(target)) {
         setFiltersVisible(false);
       }
     };
@@ -63,6 +69,7 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const hasFetchedRef = useRef(false);
   const filtersPanelRef = useRef<HTMLDivElement>(null);
+  const filtersToggleButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     // Prevent duplicate calls
@@ -228,6 +235,7 @@ function App() {
           <>
             {/* Floating filter toggle button */}
             <button
+              ref={filtersToggleButtonRef}
               className="filters-toggle-button"
               onClick={() => setFiltersVisible(!filtersVisible)}
               aria-label={filtersVisible ? t.hideFilters : t.showFilters}
