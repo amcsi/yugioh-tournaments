@@ -156,10 +156,22 @@ function App() {
           <div className="header-top-right">
             <LanguageSelector />
             {!loading && !error && allTournaments.length > 0 && (
-              <div className="tournaments-count-header">
-                {tournaments.length} {t.tournamentsFound}
-                {(selectedStores.size > 0 || selectedEventCategories.size > 0) && ` (${allTournaments.length} ${t.tournamentsTotal})`}
-              </div>
+              <>
+                <div className="tournaments-count-header">
+                  {tournaments.length} {t.tournamentsFound}
+                  {(selectedStores.size > 0 || selectedEventCategories.size > 0) && ` (${allTournaments.length} ${t.tournamentsTotal})`}
+                </div>
+                <div className="view-mode-selector-header">
+                  <button
+                    className={`view-mode-button ${viewMode === "calendar" ? "active" : ""}`}
+                    onClick={() => setViewMode(viewMode === "calendar" ? "list" : "calendar")}
+                    aria-pressed={viewMode === "calendar"}
+                  >
+                    <span className="calendar-icon">📅</span>
+                    {t.calendarToggle}
+                  </button>
+                </div>
+              </>
             )}
           </div>
         </div>
@@ -218,12 +230,13 @@ function App() {
               {tournaments.length} {t.tournamentsFound}
               {(selectedStores.size > 0 || selectedEventCategories.size > 0) && ` (${allTournaments.length} ${t.tournamentsTotal})`}
             </div>
-            <div className="view-mode-selector">
+            <div className="view-mode-selector view-mode-selector-mobile">
               <button
                 className={`view-mode-button ${viewMode === "calendar" ? "active" : ""}`}
                 onClick={() => setViewMode(viewMode === "calendar" ? "list" : "calendar")}
                 aria-pressed={viewMode === "calendar"}
               >
+                <span className="calendar-icon">📅</span>
                 {t.calendarToggle}
               </button>
             </div>

@@ -52,6 +52,14 @@
   .tournaments-count-mobile {
     display: none;
   }
+
+  .view-mode-selector-header {
+    display: block;
+  }
+
+  .view-mode-selector-mobile {
+    display: none !important;
+  }
 }
 
 @media (max-width: 768px) {
@@ -60,6 +68,14 @@
   }
 
   .tournaments-count-mobile {
+    display: block;
+  }
+
+  .view-mode-selector-header {
+    display: none;
+  }
+
+  .view-mode-selector-mobile {
     display: block;
   }
 }
@@ -326,6 +342,16 @@
   align-items: center;
 }
 
+.view-mode-selector-header {
+  margin-bottom: 0;
+}
+
+.view-mode-selector-header .view-mode-button {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  margin-bottom: 0;
+}
+
 .view-mode-button {
   padding: 0.75rem 1.5rem;
   background: rgba(255, 255, 255, 0.05);
@@ -337,6 +363,14 @@
   cursor: pointer;
   transition: all 0.2s;
   font-family: inherit;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.calendar-icon {
+  font-size: 1.1rem;
+  line-height: 1;
 }
 
 .view-mode-button:hover {
