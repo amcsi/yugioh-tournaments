@@ -253,19 +253,6 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
             )}
           </span>
         </div>
-
-        {tournament.eventUrl && (
-          <div className="info-row">
-            <a
-              href={tournament.eventUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="event-link"
-            >
-              {t.moreInformation} →
-            </a>
-          </div>
-        )}
       </div>
     </div>
   );
