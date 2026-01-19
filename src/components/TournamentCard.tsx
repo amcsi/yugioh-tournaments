@@ -245,13 +245,6 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
         )}
 
         <div className="info-row">
-          <span className="info-label">{t.players}</span>
-          <span className="info-value">
-            {tournament.localPlayerNumber} / {tournament.forecastPlayerNumber} {t.registered}
-          </span>
-        </div>
-
-        <div className="info-row">
           <span className="info-label">{t.reservations}</span>
           <span className={`info-value ${tournament.reserveState === "RESERVEABLE" ? "reservable" : ""}`}>
             {getReserveStateLabel(tournament.reserveState)}
