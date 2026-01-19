@@ -71,6 +71,10 @@ export interface Translations {
   noTournamentsWithFilters: string;
   tooltipMoreTournaments: string;
   
+  // Filters
+  showFilters: string;
+  hideFilters: string;
+  
   // View modes
   calendarToggle: string;
   
@@ -130,6 +134,8 @@ export const translations: Record<Language, Translations> = {
     tooltipMoreTournaments: "további",
     calendarToggle: "Naptár",
     failedToLoadTournaments: "Nem sikerült betölteni a versenyeket",
+    showFilters: "Szűrők",
+    hideFilters: "Szűrők elrejtése",
   },
   en: {
     appTitle: "Yu-Gi-Oh! Tournaments in Hungary",
@@ -182,6 +188,8 @@ export const translations: Record<Language, Translations> = {
     tooltipMoreTournaments: "more",
     calendarToggle: "Calendar",
     failedToLoadTournaments: "Failed to load tournaments",
+    showFilters: "Filters",
+    hideFilters: "Hide filters",
   },
 };
 

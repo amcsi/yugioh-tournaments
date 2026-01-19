@@ -31,6 +31,9 @@ function App() {
     localStorage.setItem("viewMode", mode);
   };
   
+  // Filters visibility state (hidden by default on desktop)
+  const [filtersVisible, setFiltersVisible] = useState(false);
+  
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const hasFetchedRef = useRef(false);
@@ -177,18 +180,32 @@ function App() {
 
         {!loading && !error && allTournaments.length > 0 && (
           <>
-            <EventCategoryFilter
-              tournaments={allTournaments}
-              selectedCategories={selectedEventCategories}
-              onCategoryToggle={handleEventCategoryToggle}
-            />
-            <StoreFilter
-              tournaments={allTournaments}
-              selectedStores={selectedStores}
-              onStoreToggle={handleStoreToggle}
-              onOtherStoresToggle={handleOtherStoresToggle}
-              onClearFilter={handleClearFilter}
-            />
+            {/* Floating filter toggle button */}
+            <button
+              className="filters-toggle-button"
+              onClick={() => setFiltersVisible(!filtersVisible)}
+              aria-label={filtersVisible ? t.hideFilters : t.showFilters}
+            >
+              <span className="filters-toggle-icon">🔍</span>
+              <span className="filters-toggle-text">{filtersVisible ? t.hideFilters : t.showFilters}</span>
+            </button>
+
+            {/* Filters panel with slide animation - absolutely positioned on desktop */}
+            <div className={`filters-panel ${filtersVisible ? "visible" : ""}`}>
+              <EventCategoryFilter
+                tournaments={allTournaments}
+                selectedCategories={selectedEventCategories}
+                onCategoryToggle={handleEventCategoryToggle}
+              />
+              <StoreFilter
+                tournaments={allTournaments}
+                selectedStores={selectedStores}
+                onStoreToggle={handleStoreToggle}
+                onOtherStoresToggle={handleOtherStoresToggle}
+                onClearFilter={handleClearFilter}
+              />
+            </div>
+
             <div className="tournaments-count">
               {tournaments.length} {t.tournamentsFound}
               {(selectedStores.size > 0 || selectedEventCategories.size > 0) && ` (${allTournaments.length} ${t.tournamentsTotal})`}

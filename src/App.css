@@ -92,6 +92,119 @@
 
 .app-main {
   width: 100%;
+  position: relative;
+}
+
+@media (min-width: 769px) {
+  .app-main {
+    padding-top: 0;
+  }
+}
+
+/* Floating filter toggle button */
+.filters-toggle-button {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: linear-gradient(135deg, #646cff 0%, #535bf2 100%);
+  border: none;
+  border-radius: 50px;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(100, 108, 255, 0.4);
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.filters-toggle-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(100, 108, 255, 0.5);
+}
+
+.filters-toggle-button:active {
+  transform: translateY(0);
+}
+
+.filters-toggle-icon {
+  font-size: 1.1rem;
+}
+
+.filters-toggle-text {
+  white-space: nowrap;
+}
+
+/* Filters panel */
+.filters-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: linear-gradient(180deg, #1a1a2e 0%, #1e1e2e 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin: 0;
+  transition: max-height 0.4s ease, opacity 0.3s ease, padding-top 0.3s ease, padding-bottom 0.3s ease;
+}
+
+.filters-panel.visible {
+  max-height: 1000px;
+  opacity: 1;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+
+/* Desktop: constrain width and add horizontal padding */
+@media (min-width: 769px) {
+  .filters-panel > * {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  .filters-panel > *:not(:last-child) {
+    margin-bottom: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .filters-toggle-button {
+    display: none;
+  }
+
+  .filters-panel {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    background: transparent;
+    border-bottom: none;
+    box-shadow: none;
+    max-height: none;
+    opacity: 1;
+    padding: 0;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Ensure filter components keep their padding on mobile */
+  .filters-panel .event-category-filter,
+  .filters-panel .store-filter {
+    padding: 1.5rem !important;
+  }
 }
 
 .loading {
