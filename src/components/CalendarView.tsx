@@ -58,17 +58,17 @@ export function CalendarView({ tournaments }: CalendarViewProps) {
     const startDay = (firstDay.getDay() + 6) % 7; // Convert Sunday=0 to Monday=0
     const daysInMonth = lastDay.getDate();
     
-    const days: Array<{ date: Date; isCurrentMonth: boolean; categoryCounts: Map<EventCategory, number> }> = [];
+    const days: Array<{ date: Date; isCurrentMonth: boolean; categoryCounts: Map<EventCategory, number>; tournaments: Tournament[] }> = [];
     
-    // Helper function to count tournaments by category
-    const getCategoryCounts = (dateKey: string): Map<EventCategory, number> => {
+    // Helper function to count tournaments by category and get tournaments
+    const getCategoryCounts = (dateKey: string): { counts: Map<EventCategory, number>; tournaments: Tournament[] } => {
       const tournaments = tournamentsByDate.get(dateKey) || [];
       const counts = new Map<EventCategory, number>();
       tournaments.forEach((tournament) => {
         const category = getEventCategory(tournament);
         counts.set(category, (counts.get(category) || 0) + 1);
       });
-      return counts;
+      return { counts, tournaments };
     };
     
     // Previous month days
@@ -76,10 +76,12 @@ export function CalendarView({ tournaments }: CalendarViewProps) {
     for (let i = startDay - 1; i >= 0; i--) {
       const date = new Date(year, month - 1, prevMonthLastDay - i);
       const dateKey = formatDateKey(date);
+      const { counts, tournaments } = getCategoryCounts(dateKey);
       days.push({
         date,
         isCurrentMonth: false,
-        categoryCounts: getCategoryCounts(dateKey),
+        categoryCounts: counts,
+        tournaments,
       });
     }
     
@@ -87,10 +89,12 @@ export function CalendarView({ tournaments }: CalendarViewProps) {
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(year, month, day);
       const dateKey = formatDateKey(date);
+      const { counts, tournaments } = getCategoryCounts(dateKey);
       days.push({
         date,
         isCurrentMonth: true,
-        categoryCounts: getCategoryCounts(dateKey),
+        categoryCounts: counts,
+        tournaments,
       });
     }
     
@@ -99,10 +103,12 @@ export function CalendarView({ tournaments }: CalendarViewProps) {
     for (let day = 1; day <= remainingDays; day++) {
       const date = new Date(year, month + 1, day);
       const dateKey = formatDateKey(date);
+      const { counts, tournaments } = getCategoryCounts(dateKey);
       days.push({
         date,
         isCurrentMonth: false,
-        categoryCounts: getCategoryCounts(dateKey),
+        categoryCounts: counts,
+        tournaments,
       });
     }
     
@@ -222,17 +228,33 @@ export function CalendarView({ tournaments }: CalendarViewProps) {
                 >
                   <span className="calendar-day-number">{dayInfo.date.getDate()}</span>
                   {dayInfo.categoryCounts.size > 0 && (
-                    <div className="calendar-day-badges">
-                      {Array.from(dayInfo.categoryCounts.entries()).map(([category, count]) => (
-                        <span
-                          key={category}
-                          className="calendar-day-badge"
-                          style={{ backgroundColor: getEventCategoryColor(category) }}
-                        >
-                          {count}
-                        </span>
-                      ))}
-                    </div>
+                    <>
+                      {/* Desktop: Show count badges grouped by category */}
+                      <div className="calendar-day-badges desktop-badges">
+                        {Array.from(dayInfo.categoryCounts.entries()).map(([category, count]) => (
+                          <span
+                            key={category}
+                            className="calendar-day-badge"
+                            style={{ backgroundColor: getEventCategoryColor(category) }}
+                          >
+                            {count}
+                          </span>
+                        ))}
+                      </div>
+                      {/* Mobile: Show individual dots, one per tournament */}
+                      <div className="calendar-day-badges mobile-badges">
+                        {dayInfo.tournaments.map((tournament, idx) => {
+                          const category = getEventCategory(tournament);
+                          return (
+                            <span
+                              key={`${tournament.tournamentNo}-${idx}`}
+                              className="calendar-day-dot"
+                              style={{ backgroundColor: getEventCategoryColor(category) }}
+                            />
+                          );
+                        })}
+                      </div>
+                    </>
                   )}
                 </button>
                 {isHovered && dayTournaments.length > 0 && (

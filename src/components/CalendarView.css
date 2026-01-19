@@ -182,6 +182,32 @@
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
+/* Mobile badges - show individual dots */
+.mobile-badges {
+  display: none;
+}
+
+.calendar-day-dot {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 768px) {
+  .desktop-badges {
+    display: none;
+  }
+
+  .mobile-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15rem;
+  }
+}
+
 .calendar-day.selected .calendar-day-badge {
   background: rgba(255, 255, 255, 0.3);
 }
