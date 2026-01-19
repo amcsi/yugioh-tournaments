@@ -36,7 +36,17 @@ function App() {
 
   // Close filters when clicking outside or pressing Escape
   useEffect(() => {
-    if (!filtersVisible) return;
+    if (filtersVisible) {
+      // Add class to body for cursor pointer styling
+      document.body.classList.add("filters-modal-open");
+    } else {
+      // Remove class when modal closes
+      document.body.classList.remove("filters-modal-open");
+    }
+
+    if (!filtersVisible) {
+      return;
+    }
 
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -62,6 +72,8 @@ function App() {
     return () => {
       document.removeEventListener("keydown", handleEscape);
       document.removeEventListener("mousedown", handleClickOutside);
+      // Clean up body class on unmount
+      document.body.classList.remove("filters-modal-open");
     };
   }, [filtersVisible]);
   
