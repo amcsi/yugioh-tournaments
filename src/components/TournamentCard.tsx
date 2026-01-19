@@ -235,11 +235,6 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
 
       <div className="tournament-info">
         <div className="info-row">
-          <span className="info-label">{t.eventType}</span>
-          <span className="info-value">{tournament.eventName}</span>
-        </div>
-
-        <div className="info-row">
           <span className="info-label">{t.structure}</span>
           <span className="info-value">{getStructureLabel(tournament.structure)}</span>
         </div>
