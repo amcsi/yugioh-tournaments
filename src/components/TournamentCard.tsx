@@ -18,6 +18,74 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
     return dateString.replace(" ", " - ");
   };
 
+  const formatDateRangeWithDay = (startString: string, endString?: string | null) => {
+    if (!startString) return "N/A";
+    if (!endString) return formatDateWithDay(startString);
+
+    try {
+      const [startDatePart, startTimePart] = startString.split(" ");
+      const [endDatePart, endTimePart] = endString.split(" ");
+
+      const [year, month, day] = startDatePart.split("/").map(Number);
+      const date = new Date(year, month - 1, day);
+
+      const dayNames = language === "hu"
+        ? ["vasárnap", "hétfő", "kedd", "szerda", "csütörtök", "péntek", "szombat"]
+        : ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      const dayName = dayNames[date.getDay()];
+
+      const base = `${startDatePart} (${dayName})`;
+
+      // Same day – show date once, then time range
+      if (startDatePart === endDatePart) {
+        if (startTimePart && endTimePart) {
+          return `${base} - ${startTimePart} - ${endTimePart}`;
+        }
+        if (startTimePart) {
+          return `${base} - ${startTimePart}`;
+        }
+        if (endTimePart) {
+          return `${base} - ${endTimePart}`;
+        }
+        return base;
+      }
+
+      // Different days – fall back to full range
+      return `${formatDateWithDay(startString)} - ${formatDateWithDay(endString)}`;
+    } catch {
+      return `${formatDateWithDay(startString)} - ${formatDateWithDay(endString)}`;
+    }
+  };
+
+  const formatEntryRange = (startString: string, endString?: string | null) => {
+    if (!startString) return "N/A";
+    if (!endString) return formatDate(startString);
+
+    try {
+      const [startDatePart, startTimePart] = startString.split(" ");
+      const [endDatePart, endTimePart] = endString.split(" ");
+
+      // Same day – show date once, then time range
+      if (startDatePart === endDatePart) {
+        if (startTimePart && endTimePart) {
+          return `${startDatePart} - ${startTimePart} - ${endTimePart}`;
+        }
+        if (startTimePart) {
+          return `${startDatePart} - ${startTimePart}`;
+        }
+        if (endTimePart) {
+          return `${startDatePart} - ${endTimePart}`;
+        }
+        return startDatePart;
+      }
+
+      // Different days – fall back to full range
+      return `${formatDate(startString)} - ${formatDate(endString)}`;
+    } catch {
+      return `${formatDate(startString)} - ${formatDate(endString)}`;
+    }
+  };
+
   const formatDateWithDay = (dateString: string) => {
     if (!dateString) return "N/A";
     
@@ -120,15 +188,14 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
         <div className="info-row">
           <span className="info-label">{t.dateAndTime}</span>
           <span className="info-value">
-            {formatDateWithDay(tournament.localTournamentDate)}
-            {tournament.localTournamentDateEnd && ` - ${formatDateWithDay(tournament.localTournamentDateEnd)}`}
+            {formatDateRangeWithDay(tournament.localTournamentDate, tournament.localTournamentDateEnd)}
           </span>
         </div>
 
         <div className="info-row">
           <span className="info-label">{t.entry}</span>
           <span className="info-value">
-            {formatDate(tournament.localEntryStartDate)} - {formatDate(tournament.localEntryEndDate)}
+            {formatEntryRange(tournament.localEntryStartDate, tournament.localEntryEndDate)}
           </span>
         </div>
 
