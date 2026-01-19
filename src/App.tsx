@@ -33,10 +33,36 @@ function App() {
   
   // Filters visibility state (hidden by default on desktop)
   const [filtersVisible, setFiltersVisible] = useState(false);
+
+  // Close filters when clicking outside or pressing Escape
+  useEffect(() => {
+    if (!filtersVisible) return;
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setFiltersVisible(false);
+      }
+    };
+
+    const handleClickOutside = (e: MouseEvent) => {
+      if (filtersPanelRef.current && !filtersPanelRef.current.contains(e.target as Node)) {
+        setFiltersVisible(false);
+      }
+    };
+
+    document.addEventListener("keydown", handleEscape);
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [filtersVisible]);
   
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const hasFetchedRef = useRef(false);
+  const filtersPanelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Prevent duplicate calls
@@ -211,7 +237,16 @@ function App() {
             </button>
 
             {/* Filters panel with slide animation - absolutely positioned on desktop */}
-            <div className={`filters-panel ${filtersVisible ? "visible" : ""}`}>
+            <div 
+              ref={filtersPanelRef}
+              className={`filters-panel ${filtersVisible ? "visible" : ""}`}
+              onClick={(e) => {
+                // Close if clicking on the panel background (not on filter cards)
+                if (e.target === e.currentTarget) {
+                  setFiltersVisible(false);
+                }
+              }}
+            >
               <EventCategoryFilter
                 tournaments={allTournaments}
                 selectedCategories={selectedEventCategories}

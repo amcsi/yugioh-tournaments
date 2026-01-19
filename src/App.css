@@ -218,6 +218,7 @@
   padding-bottom: 0;
   margin: 0;
   transition: max-height 0.4s ease, opacity 0.3s ease, padding-top 0.3s ease, padding-bottom 0.3s ease;
+  cursor: pointer;
 }
 
 .filters-panel.visible {
@@ -235,6 +236,7 @@
     margin-right: auto;
     padding-left: 2rem;
     padding-right: 2rem;
+    cursor: default;
   }
 
   .filters-panel > *:not(:last-child) {
