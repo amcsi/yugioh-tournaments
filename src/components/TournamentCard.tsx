@@ -57,16 +57,35 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
     }
   };
 
-  const formatEntryRange = (startString: string, endString?: string | null) => {
+  const formatEntryRange = (startString: string, endString?: string | null, tournamentDateString?: string) => {
     if (!startString) return "N/A";
     if (!endString) return formatDate(startString);
 
     try {
       const [startDatePart, startTimePart] = startString.split(" ");
       const [endDatePart, endTimePart] = endString.split(" ");
+      
+      // Check if entry date matches tournament date
+      const tournamentDatePart = tournamentDateString?.split(" ")[0];
+      const entryMatchesTournament = tournamentDatePart && startDatePart === tournamentDatePart;
 
-      // Same day – show date once, then time range
+      // Same day – show date once, then time range (unless it matches tournament date)
       if (startDatePart === endDatePart) {
+        if (entryMatchesTournament) {
+          // Entry date matches tournament date - show only time range
+          if (startTimePart && endTimePart) {
+            return `${startTimePart} - ${endTimePart}`;
+          }
+          if (startTimePart) {
+            return startTimePart;
+          }
+          if (endTimePart) {
+            return endTimePart;
+          }
+          return "";
+        }
+        
+        // Entry date doesn't match tournament date - show date and time range
         if (startTimePart && endTimePart) {
           return `${startDatePart} - ${startTimePart} - ${endTimePart}`;
         }
@@ -195,7 +214,7 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
         <div className="info-row">
           <span className="info-label">{t.entry}</span>
           <span className="info-value">
-            {formatEntryRange(tournament.localEntryStartDate, tournament.localEntryEndDate)}
+            {formatEntryRange(tournament.localEntryStartDate, tournament.localEntryEndDate, tournament.localTournamentDate)}
           </span>
         </div>
 
