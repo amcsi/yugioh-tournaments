@@ -20,6 +20,16 @@ export interface Translations {
   otherStores: string;
   clearFilter: string;
   
+  // Store types
+  storeTypeMetagame: string;
+  storeTypeRemetebarlang: string;
+  storeTypeSasKos: string;
+  storeTypePottyosZebra: string;
+  storeTypeSportKartya: string;
+  storeTypeBoL: string;
+  storeTypeJatekCeh: string;
+  storeTypeOther: string;
+  
   // Tournament card labels
   eventType: string;
   structure: string;
@@ -81,6 +91,14 @@ export const translations: Record<Language, Translations> = {
     filterByEventType: "Szűrés esemény típus szerint",
     otherStores: "Egyéb boltok",
     clearFilter: "Szűrés törlése",
+    storeTypeMetagame: "Metagame",
+    storeTypeRemetebarlang: "Remetebarlang",
+    storeTypeSasKos: "SAS és KOS",
+    storeTypePottyosZebra: "Pöttyös Zebra",
+    storeTypeSportKartya: "Sport Kártya",
+    storeTypeBoL: "BoL",
+    storeTypeJatekCeh: "Játék Céh",
+    storeTypeOther: "Egyéb",
     eventType: "Esemény típusa:",
     structure: "Rendszer:",
     dateAndTime: "Dátum és idő:",
@@ -125,6 +143,14 @@ export const translations: Record<Language, Translations> = {
     filterByEventType: "Filter by event type",
     otherStores: "Other stores",
     clearFilter: "Clear filter",
+    storeTypeMetagame: "Metagame",
+    storeTypeRemetebarlang: "Remetebarlang",
+    storeTypeSasKos: "SAS és KOS",
+    storeTypePottyosZebra: "Pöttyös Zebra",
+    storeTypeSportKartya: "Sport Kártya",
+    storeTypeBoL: "BoL",
+    storeTypeJatekCeh: "Játék Céh",
+    storeTypeOther: "Other",
     eventType: "Event Type:",
     structure: "Structure:",
     dateAndTime: "Date & Time:",

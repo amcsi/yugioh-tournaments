@@ -179,12 +179,38 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
       return "Sport Kártya";
     } else if (name.includes("bar of legends") || name.includes("bol")) {
       return "BoL";
+    } else if (name.includes("játék") && name.includes("céh")) {
+      return "Játék Céh";
     } else {
-      return "Egyéb";
+      return "Other";
+    }
+  };
+
+  const getStoreTypeLabel = (storeType: string): string => {
+    switch (storeType) {
+      case "Metagame":
+        return t.storeTypeMetagame;
+      case "Remetebarlang":
+        return t.storeTypeRemetebarlang;
+      case "SAS és KOS":
+        return t.storeTypeSasKos;
+      case "Pöttyös Zebra":
+        return t.storeTypePottyosZebra;
+      case "Sport Kártya":
+        return t.storeTypeSportKartya;
+      case "BoL":
+        return t.storeTypeBoL;
+      case "Játék Céh":
+        return t.storeTypeJatekCeh;
+      case "Other":
+        return t.storeTypeOther;
+      default:
+        return storeType;
     }
   };
 
   const storeType = getStoreType(tournament.storeName || tournament.locationName);
+  const storeTypeLabel = getStoreTypeLabel(storeType);
   const eventCategory = getEventCategory(tournament);
   const eventCategoryColor = getEventCategoryColor(eventCategory);
   const eventCategoryLabel = getEventCategoryLabel(eventCategory, language);
@@ -202,7 +228,7 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
           </span>
         </div>
         <div className="tournament-header-right">
-          <span className="store-type-badge">{storeType}</span>
+          <span className="store-type-badge">{storeTypeLabel}</span>
           <span className="tournament-number">{tournament.tournamentNo}</span>
         </div>
       </div>

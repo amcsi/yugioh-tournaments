@@ -85,7 +85,7 @@ export function StoreFilter({
               {store.name}
               {store.city && <span className="store-city"> ({store.city})</span>}
             </span>
-            <span className="store-badge">{store.type}</span>
+            <span className="store-badge">{getStoreTypeLabel(store.type, language)}</span>
             <span className="store-count">({store.count})</span>
           </button>
         ))}
@@ -143,8 +143,34 @@ function getStoreType(storeName: string): string {
     return "Sport Kártya";
   } else if (name.includes("bar of legends") || name.includes("bol")) {
     return "BoL";
+  } else if (name.includes("játék") && name.includes("céh")) {
+    return "Játék Céh";
   } else {
-    return "Egyéb";
+    return "Other";
+  }
+}
+
+function getStoreTypeLabel(storeType: string, language: "hu" | "en"): string {
+  const t = translations[language];
+  switch (storeType) {
+    case "Metagame":
+      return t.storeTypeMetagame;
+    case "Remetebarlang":
+      return t.storeTypeRemetebarlang;
+    case "SAS és KOS":
+      return t.storeTypeSasKos;
+    case "Pöttyös Zebra":
+      return t.storeTypePottyosZebra;
+    case "Sport Kártya":
+      return t.storeTypeSportKartya;
+    case "BoL":
+      return t.storeTypeBoL;
+    case "Játék Céh":
+      return t.storeTypeJatekCeh;
+    case "Other":
+      return t.storeTypeOther;
+    default:
+      return storeType;
   }
 }
 
