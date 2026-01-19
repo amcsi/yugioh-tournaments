@@ -65,6 +65,20 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
       const [startDatePart, startTimePart] = startString.split(" ");
       const [endDatePart, endTimePart] = endString.split(" ");
       
+      // If start and end are identical, only show start
+      if (startString === endString) {
+        const tournamentDatePart = tournamentDateString?.split(" ")[0];
+        const entryMatchesTournament = tournamentDatePart && startDatePart === tournamentDatePart;
+        
+        if (entryMatchesTournament) {
+          // Entry date matches tournament date - show only time
+          return startTimePart || startDatePart;
+        }
+        
+        // Entry date doesn't match tournament date - show date and time
+        return formatDate(startString);
+      }
+      
       // Check if entry date matches tournament date
       const tournamentDatePart = tournamentDateString?.split(" ")[0];
       const entryMatchesTournament = tournamentDatePart && startDatePart === tournamentDatePart;
