@@ -153,7 +153,15 @@ function App() {
       <header className="app-header">
         <div className="header-top">
           <h1>{t.appTitle}</h1>
-          <LanguageSelector />
+          <div className="header-top-right">
+            <LanguageSelector />
+            {!loading && !error && allTournaments.length > 0 && (
+              <div className="tournaments-count-header">
+                {tournaments.length} {t.tournamentsFound}
+                {(selectedStores.size > 0 || selectedEventCategories.size > 0) && ` (${allTournaments.length} ${t.tournamentsTotal})`}
+              </div>
+            )}
+          </div>
         </div>
       </header>
 
@@ -206,7 +214,7 @@ function App() {
               />
             </div>
 
-            <div className="tournaments-count">
+            <div className="tournaments-count tournaments-count-mobile">
               {tournaments.length} {t.tournamentsFound}
               {(selectedStores.size > 0 || selectedEventCategories.size > 0) && ` (${allTournaments.length} ${t.tournamentsTotal})`}
             </div>

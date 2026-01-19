@@ -19,6 +19,51 @@
   gap: 1rem;
 }
 
+.header-top-right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.tournaments-count-header {
+  padding: 0.5rem 1rem;
+  background: rgba(100, 108, 255, 0.1);
+  border-radius: 8px;
+  text-align: center;
+  color: #aaa;
+  font-size: 0.9rem;
+  border: 1px solid rgba(100, 108, 255, 0.2);
+  white-space: nowrap;
+}
+
+@media (min-width: 769px) {
+  .header-top-right {
+    flex-direction: row;
+    align-items: center;
+    gap: 1.5rem;
+    justify-content: center;
+  }
+
+  .tournaments-count-header {
+    display: block;
+  }
+
+  .tournaments-count-mobile {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .tournaments-count-header {
+    display: none;
+  }
+
+  .tournaments-count-mobile {
+    display: block;
+  }
+}
+
 .app-header h1 {
   font-size: 2.5rem;
   font-weight: 700;
