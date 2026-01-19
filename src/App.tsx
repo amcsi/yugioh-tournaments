@@ -206,14 +206,25 @@ function App() {
                   {tournaments.length} {t.tournamentsFound}
                   {(selectedStores.size > 0 || selectedEventCategories.size > 0) && ` (${allTournaments.length} ${t.tournamentsTotal})`}
                 </div>
-                <div className="view-mode-selector-header">
+                <div className="header-actions">
+                  <div className="view-mode-selector-header">
+                    <button
+                      className={`view-mode-button ${viewMode === "calendar" ? "active" : ""}`}
+                      onClick={() => setViewMode(viewMode === "calendar" ? "list" : "calendar")}
+                      aria-pressed={viewMode === "calendar"}
+                    >
+                      <span className="calendar-icon">📅</span>
+                      {t.calendarToggle}
+                    </button>
+                  </div>
                   <button
-                    className={`view-mode-button ${viewMode === "calendar" ? "active" : ""}`}
-                    onClick={() => setViewMode(viewMode === "calendar" ? "list" : "calendar")}
-                    aria-pressed={viewMode === "calendar"}
+                    className={`filters-button-header ${filtersVisible ? "active" : ""}`}
+                    onClick={() => setFiltersVisible(!filtersVisible)}
+                    aria-label={filtersVisible ? t.hideFilters : t.showFilters}
+                    aria-pressed={filtersVisible}
                   >
-                    <span className="calendar-icon">📅</span>
-                    {t.calendarToggle}
+                    <span className="filters-icon">🔍</span>
+                    {t.showFilters}
                   </button>
                 </div>
               </>
