@@ -20,7 +20,7 @@ A web application that lists upcoming Yu-Gi-Oh! tournaments in Hungary. The app 
 
 ## Live Demo
 
-🌐 **Live Site**: [https://yugiohverseny.netlify.app](https://yugiohverseny.netlify.app)
+🌐 **Live Site**: [https://yugiohverseny.hu](https://yugiohverseny.hu)
 
 ## Tech Stack
 
