@@ -65,7 +65,7 @@ export function StoreFilter({
   const permanentStoreMap = new Map<string, { count: number; type: string; city: string }>();
 
   // For each permanent store type, find matching stores or create placeholder
-  PERMANENT_STORES.forEach(({ namePattern, type, defaultCity }) => {
+  PERMANENT_STORES.forEach(({ type, defaultCity }) => {
     // Find all stores that match this permanent store type
     const matchingStores: Array<{ name: string; info: { count: number; type: string; city: string } }> = [];
 
@@ -122,10 +122,7 @@ export function StoreFilter({
             onClick={() => store.count > 0 && onStoreToggle(store.name)}
             disabled={store.count === 0}
           >
-            <span className="store-name">
-              {store.name}
-              {store.city && <span className="store-city"> ({store.city})</span>}
-            </span>
+            {store.city && <span className="store-city">{store.city}</span>}
             <span className="store-badge">{getStoreTypeLabel(store.type, language)}</span>
             <span className="store-count">({store.count})</span>
           </button>

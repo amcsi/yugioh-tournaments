@@ -57,13 +57,9 @@
   background: linear-gradient(135deg, #646cff 0%, #535bf2 100%);
 }
 
-.store-name {
-  font-weight: 500;
-}
-
 .store-city {
   color: #aaa;
-  font-weight: 400;
+  font-weight: 500;
   font-size: 0.9em;
 }
 
