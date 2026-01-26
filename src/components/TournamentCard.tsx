@@ -181,6 +181,8 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
       return "BoL";
     } else if (name.includes("játék") && name.includes("céh")) {
       return "Játék Céh";
+    } else if (name.includes("ratmayer")) {
+      return "Ratmayer";
     } else {
       return "Other";
     }
@@ -202,6 +204,8 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
         return t.storeTypeBoL;
       case "Játék Céh":
         return t.storeTypeJatekCeh;
+      case "Ratmayer":
+        return t.storeTypeRatmayer;
       case "Other":
         return t.storeTypeOther;
       default:

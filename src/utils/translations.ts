@@ -28,6 +28,7 @@ export interface Translations {
   storeTypeSportKartya: string;
   storeTypeBoL: string;
   storeTypeJatekCeh: string;
+  storeTypeRatmayer: string;
   storeTypeOther: string;
   
   // Tournament card labels
@@ -102,6 +103,7 @@ export const translations: Record<Language, Translations> = {
     storeTypeSportKartya: "Sport Kártya",
     storeTypeBoL: "BoL",
     storeTypeJatekCeh: "Játék Céh",
+    storeTypeRatmayer: "Ratmayer",
     storeTypeOther: "Egyéb",
     eventType: "Esemény típusa:",
     structure: "Rendszer:",
@@ -156,6 +158,7 @@ export const translations: Record<Language, Translations> = {
     storeTypeSportKartya: "Sport Kártya",
     storeTypeBoL: "BoL",
     storeTypeJatekCeh: "Játék Céh",
+    storeTypeRatmayer: "Ratmayer",
     storeTypeOther: "Other",
     eventType: "Event Type:",
     structure: "Structure:",

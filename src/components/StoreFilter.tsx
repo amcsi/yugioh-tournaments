@@ -145,6 +145,8 @@ function getStoreType(storeName: string): string {
     return "BoL";
   } else if (name.includes("játék") && name.includes("céh")) {
     return "Játék Céh";
+  } else if (name.includes("ratmayer")) {
+    return "Ratmayer";
   } else {
     return "Other";
   }
@@ -167,6 +169,8 @@ function getStoreTypeLabel(storeType: string, language: "hu" | "en"): string {
       return t.storeTypeBoL;
     case "Játék Céh":
       return t.storeTypeJatekCeh;
+    case "Ratmayer":
+      return t.storeTypeRatmayer;
     case "Other":
       return t.storeTypeOther;
     default:
