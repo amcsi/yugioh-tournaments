@@ -178,8 +178,6 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
         return t.storeTypePottyosZebra;
       case "Sport Kártya":
         return t.storeTypeSportKartya;
-      case "BoL":
-        return t.storeTypeBoL;
       case "Játék Céh":
         return t.storeTypeJatekCeh;
       case "Ratmayer":

@@ -10,14 +10,12 @@ export function getStoreType(storeName: string): string {
     return "Metagame";
   } else if (name.includes("remete") || name.includes("remetebarlang")) {
     return "Remetebarlang";
-  } else if (name.includes("sas") || name.includes("kos")) {
+  } else if (name.includes("sas és kos") || name.includes("bar of legends")) {
     return "SAS és KOS";
   } else if (name.includes("pöttyös") || name.includes("zebra")) {
     return "Pöttyös Zebra";
   } else if (name.includes("sport") || name.includes("kártya")) {
     return "Sport Kártya";
-  } else if (name.includes("bar of legends") || name.includes("bol")) {
-    return "BoL";
   } else if (name.includes("játék") && name.includes("céh")) {
     return "Játék Céh";
   } else if (name.includes("ratmayer")) {

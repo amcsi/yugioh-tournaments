@@ -26,7 +26,6 @@ const PERMANENT_STORES: Array<{ namePattern: string; type: string; defaultCity: 
   { namePattern: "sas", type: "SAS és KOS", defaultCity: "Győr" },
   { namePattern: "pöttyös", type: "Pöttyös Zebra", defaultCity: "Szeged" },
   { namePattern: "sport", type: "Sport Kártya", defaultCity: "Veszprém" },
-  { namePattern: "bar of legends", type: "BoL", defaultCity: "Győr" },
   { namePattern: "játék", type: "Játék Céh", defaultCity: "Debrecen" },
   { namePattern: "ratmayer", type: "Ratmayer", defaultCity: "Szombathely" },
 ];
@@ -183,8 +182,6 @@ function getStoreTypeLabel(storeType: string, language: "hu" | "en"): string {
       return t.storeTypePottyosZebra;
     case "Sport Kártya":
       return t.storeTypeSportKartya;
-    case "BoL":
-      return t.storeTypeBoL;
     case "Játék Céh":
       return t.storeTypeJatekCeh;
     case "Ratmayer":
