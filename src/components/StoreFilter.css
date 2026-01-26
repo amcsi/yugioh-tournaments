@@ -36,7 +36,7 @@
   font-family: inherit;
 }
 
-.store-button:hover {
+.store-button:hover:not(.disabled) {
   background: rgba(255, 255, 255, 0.1);
   border-color: rgba(100, 108, 255, 0.5);
   transform: translateY(-1px);
@@ -89,13 +89,6 @@
 .store-button.disabled {
   opacity: 0.5;
   cursor: not-allowed;
-  pointer-events: none;
-}
-
-.store-button.disabled:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.1);
-  transform: none;
 }
 
 .clear-filter {
