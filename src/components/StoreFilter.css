@@ -49,12 +49,14 @@
 }
 
 .store-button.other-stores {
-  background: rgba(100, 108, 255, 0.1);
-  border-color: rgba(100, 108, 255, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
 .store-button.other-stores.active {
   background: linear-gradient(135deg, #646cff 0%, #535bf2 100%);
+  border-color: #646cff;
+  box-shadow: 0 2px 8px rgba(100, 108, 255, 0.3);
 }
 
 .store-city {
