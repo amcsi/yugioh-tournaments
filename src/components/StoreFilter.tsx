@@ -18,6 +18,18 @@ interface StoreInfo {
   city: string;
 }
 
+// Permanent stores that should always be shown, with their default city names
+const PERMANENT_STORES: Array<{ namePattern: string; type: string; defaultCity: string }> = [
+  { namePattern: "metagame", type: "Metagame", defaultCity: "Budapest" },
+  { namePattern: "remete", type: "Remetebarlang", defaultCity: "Vác" },
+  { namePattern: "sas", type: "SAS és KOS", defaultCity: "Győr" },
+  { namePattern: "pöttyös", type: "Pöttyös Zebra", defaultCity: "Szeged" },
+  { namePattern: "sport", type: "Sport Kártya", defaultCity: "Veszprém" },
+  { namePattern: "bar of legends", type: "BoL", defaultCity: "Győr" },
+  { namePattern: "játék", type: "Játék Céh", defaultCity: "Debrecen" },
+  { namePattern: "ratmayer", type: "Ratmayer", defaultCity: "Szombathely" },
+];
+
 export function StoreFilter({
   tournaments,
   selectedStores,
@@ -27,13 +39,14 @@ export function StoreFilter({
 }: StoreFilterProps) {
   const { language } = useLanguage();
   const t = translations[language];
+
   // Extract unique stores and count tournaments per store
   const storeMap = new Map<string, { count: number; type: string; city: string }>();
 
   tournaments.forEach((tournament) => {
     const storeName = tournament.storeName || tournament.locationName;
     if (storeName) {
-      const city = getCityFromTournament(tournament);
+      const city = getCityFromTournament(tournament) || "Unknown";
       const existing = storeMap.get(storeName) || { 
         count: 0, 
         type: getStoreType(storeName),
@@ -41,15 +54,48 @@ export function StoreFilter({
       };
       existing.count++;
       // Update city if we find a different one (should be same, but just in case)
-      if (city && !existing.city) {
+      if (city && city !== "Unknown" && (!existing.city || existing.city === "Unknown")) {
         existing.city = city;
       }
       storeMap.set(storeName, existing);
     }
   });
 
-  // Convert to array and sort: Metagame first, Remetebarlang second, then by count
-  const stores: StoreInfo[] = Array.from(storeMap.entries())
+  // Create a map of permanent stores - ensure all permanent store types are always shown
+  const permanentStoreMap = new Map<string, { count: number; type: string; city: string }>();
+
+  // For each permanent store type, find matching stores or create placeholder
+  PERMANENT_STORES.forEach(({ namePattern, type, defaultCity }) => {
+    // Find all stores that match this permanent store type
+    const matchingStores: Array<{ name: string; info: { count: number; type: string; city: string } }> = [];
+
+    storeMap.forEach((info, storeName) => {
+      if (info.type === type) {
+        matchingStores.push({ name: storeName, info });
+      }
+    });
+
+    if (matchingStores.length > 0) {
+      // Use the first matching store (or merge if multiple)
+      const firstStore = matchingStores[0];
+      permanentStoreMap.set(firstStore.name, firstStore.info);
+    } else {
+      // No tournaments for this store type - create placeholder
+      permanentStoreMap.set(type, {
+        count: 0,
+        type: type,
+        city: defaultCity,
+      });
+    }
+  });
+
+  // Get all non-permanent stores (type === "Other")
+  const otherStoresList: StoreInfo[] = Array.from(storeMap.entries())
+    .filter(([_, info]) => info.type === "Other")
+    .map(([name, info]) => ({ name, ...info }));
+
+  // Convert permanent stores to array and sort: Metagame first, Remetebarlang second, then by count
+  const permanentStores: StoreInfo[] = Array.from(permanentStoreMap.entries())
     .map(([name, info]) => ({ name, ...info }))
     .sort((a, b) => {
       const priorityA = getStorePriority(a.type);
@@ -62,24 +108,19 @@ export function StoreFilter({
       return b.count - a.count;
     });
 
-  // Determine which stores are "main" stores (top stores) and which are "other"
-  // We'll show top 8 stores as main, rest as "other"
-  const mainStores = stores.slice(0, 8);
-  const otherStores = stores.slice(8);
-  const hasOtherStores = otherStores.length > 0;
-
   // Check if any "other" stores are selected
-  const hasOtherSelected = hasOtherStores && otherStores.some((store) => selectedStores.has(store.name));
+  const hasOtherSelected = otherStoresList.length > 0 && otherStoresList.some((store) => selectedStores.has(store.name));
 
   return (
     <div className="store-filter">
       <h3 className="filter-title">{t.filterByStore}</h3>
       <div className="store-buttons">
-        {mainStores.map((store) => (
+        {permanentStores.map((store) => (
           <button
             key={store.name}
-            className={`store-button ${selectedStores.has(store.name) ? "active" : ""}`}
-            onClick={() => onStoreToggle(store.name)}
+            className={`store-button ${selectedStores.has(store.name) ? "active" : ""} ${store.count === 0 ? "disabled" : ""}`}
+            onClick={() => store.count > 0 && onStoreToggle(store.name)}
+            disabled={store.count === 0}
           >
             <span className="store-name">
               {store.name}
@@ -89,15 +130,14 @@ export function StoreFilter({
             <span className="store-count">({store.count})</span>
           </button>
         ))}
-        {hasOtherStores && (
-          <button
-            className={`store-button other-stores ${hasOtherSelected ? "active" : ""}`}
-            onClick={onOtherStoresToggle}
-          >
-            <span className="store-name">{t.otherStores}</span>
-            <span className="store-count">({otherStores.length})</span>
-          </button>
-        )}
+        <button
+          className={`store-button other-stores ${hasOtherSelected ? "active" : ""} ${otherStoresList.length === 0 ? "disabled" : ""}`}
+          onClick={() => otherStoresList.length > 0 && onOtherStoresToggle()}
+          disabled={otherStoresList.length === 0}
+        >
+          <span className="store-name">{t.otherStores}</span>
+          <span className="store-count">({otherStoresList.length})</span>
+        </button>
       </div>
       {selectedStores.size > 0 && (
         <button className="clear-filter" onClick={onClearFilter}>
@@ -125,7 +165,7 @@ function getCityFromTournament(tournament: Tournament): string {
     }
   }
   
-  return "";
+  return "Unknown";
 }
 
 function getStoreType(storeName: string): string {

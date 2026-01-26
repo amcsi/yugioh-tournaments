@@ -90,6 +90,18 @@
   color: rgba(255, 255, 255, 0.9);
 }
 
+.store-button.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.store-button.disabled:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  transform: none;
+}
+
 .clear-filter {
   padding: 0.5rem 1rem;
   background: rgba(239, 68, 68, 0.1);
