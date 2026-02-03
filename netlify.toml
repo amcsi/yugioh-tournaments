@@ -1,0 +1,5 @@
+[[redirects]]
+from = "https://yugiohverseny.netlify.app/*"
+to = "https://yugiohverseny.hu/:splat"
+status = 302
+force = true
