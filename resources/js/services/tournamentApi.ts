@@ -4,16 +4,32 @@ import type {
   TournamentSearchResponse,
 } from "../types/tournament";
 
-const API_URL =
+const KONAMI_API_URL =
   "https://cardgame-network.konami.net/mt/user/rest/tournament/EU/tournament_gsearch";
 const CORS_PROXY = "https://cors-anywhere.com/";
+
+const backendUrl = typeof import.meta.env.VITE_BACKEND_URL === "string"
+  ? import.meta.env.VITE_BACKEND_URL.replace(/\/$/, "")
+  : "";
 
 export async function searchTournaments(
   request: TournamentSearchRequest,
 ): Promise<TournamentSearchResponse> {
-  // Use cors-anywhere.com as CORS proxy
-  const proxyUrl = `${CORS_PROXY}${API_URL}`;
+  // Prefer Laravel backend (serves cached JSON from public storage)
+  if (backendUrl) {
+    try {
+      const response = await axios.get<TournamentSearchResponse>(
+        `${backendUrl}/api/tournaments`,
+        { timeout: 15000 }
+      );
+      return response.data;
+    } catch {
+      // Fall through to Konami API
+    }
+  }
 
+  // Fallback: call Konami API via CORS proxy
+  const proxyUrl = `${CORS_PROXY}${KONAMI_API_URL}`;
   const maxRetries = 3;
   let lastError: Error | null = null;
 
