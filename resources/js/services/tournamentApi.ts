@@ -19,7 +19,7 @@ export async function searchTournaments(
   if (backendUrl) {
     try {
       const response = await axios.get<TournamentSearchResponse>(
-        `${backendUrl}/api/tournaments`,
+        `${backendUrl}/storage/tournaments.json`,
         { timeout: 15000 }
       );
       return response.data;

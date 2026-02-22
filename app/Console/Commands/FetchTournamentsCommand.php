@@ -14,7 +14,7 @@ class FetchTournamentsCommand extends Command
 
     private const KONAMI_URL = 'https://cardgame-network.konami.net/mt/user/rest/tournament/EU/tournament_gsearch';
 
-    private const STORAGE_FILE = 'public/tournaments.json';
+    private const STORAGE_FILE = 'tournaments.json';
 
     public function handle(): int
     {
@@ -40,21 +40,11 @@ class FetchTournamentsCommand extends Command
             return self::FAILURE;
         }
 
-        $path = Storage::path(self::STORAGE_FILE);
-        $dir = dirname($path);
-        if (! is_dir($dir)) {
-            mkdir($dir, 0755, true);
-        }
-
-        $written = file_put_contents($path, json_encode($json, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
-        if ($written === false) {
-            $this->error('Failed to write ' . $path);
-
-            return self::FAILURE;
-        }
+        $content = json_encode($json, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        Storage::disk('public')->put(self::STORAGE_FILE, $content);
 
         $count = (int) ($json['count'] ?? count($json['result'] ?? []));
-        $this->info("Saved {$count} tournaments to storage (" . self::STORAGE_FILE . ').');
+        $this->info('Saved ' . $count . ' tournaments to storage/app/public/' . self::STORAGE_FILE . '.');
 
         return self::SUCCESS;
     }
