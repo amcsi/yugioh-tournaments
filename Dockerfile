@@ -71,3 +71,4 @@ RUN chmod a+rw database/
 ARG GIT_SHA1
 ENV GIT_SHA1 $GIT_SHA1
 
+CMD ["bin/start.sh"]
