@@ -14,7 +14,7 @@ class FetchTournamentsCommand extends Command
 
     private const KONAMI_URL = 'https://cardgame-network.konami.net/mt/user/rest/tournament/EU/tournament_gsearch';
 
-    private const STORAGE_FILE = 'public/tournaments.json';
+    private const STORAGE_FILE = 'tournaments.json';
 
     public function handle(): int
     {
@@ -40,7 +40,7 @@ class FetchTournamentsCommand extends Command
             return self::FAILURE;
         }
 
-        $path = Storage::path(self::STORAGE_FILE);
+        $path = Storage::disk('public')->path(self::STORAGE_FILE);
         $dir = dirname($path);
         if (! is_dir($dir)) {
             mkdir($dir, 0755, true);
