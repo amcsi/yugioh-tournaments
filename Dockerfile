@@ -1,0 +1,73 @@
+FROM php:8.4-apache
+MAINTAINER  Attila Szeremi <attila+webdev@szeremi.com>
+WORKDIR /var/www
+RUN cd /var/www
+
+RUN apt-get update && apt-get install -y \
+  # For installing node
+  curl \
+  wget \
+  gnupg \
+  \
+  # For "The `/path/to/project/node_modules/mozjpeg/vendor/cjpeg` binary doesn't seem to work correctly"
+  # https://github.com/imagemin/imagemin-mozjpeg/issues/26
+  nasm \
+  libpng-dev \
+  \
+  # For composer
+  libzip-dev \
+  zlib1g-dev
+
+# This includes the docker-php-pecl-install executable
+COPY bin/docker-php-pecl-install /usr/local/bin/
+
+# PHP extensions
+RUN docker-php-ext-install \
+  pdo_mysql \
+  zip
+
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN composer --version
+
+COPY composer.json .
+COPY composer.lock .
+
+# These directories need to exist if we composer install without hooks/scripts.
+RUN mkdir -p database/seeders
+RUN mkdir -p database/factories
+
+# Do not run hooks, because they require the project files to already be there.
+# We want to be able to avoid complete (slow) composer installs in the Dockerfile with caching if possible.
+RUN composer install --no-scripts
+
+COPY resources resources
+
+# 1. Capture the build-arg from GitHub Actions
+ARG SENTRY_AUTH_TOKEN
+# 2. Export it as an environment variable so Vite can see it
+ENV SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
+
+COPY . .
+
+RUN mkdir -p bootstrap/cache && chmod a+rwx bootstrap/cache
+
+# This time, optimize and run hooks as well.
+RUN composer install --optimize-autoloader
+
+RUN [ \
+ "/bin/bash", \
+ "-c", \
+  "mkdir -p storage/framework/{cache,sessions,views} && chmod -R a+rwx storage/framework/{cache,sessions,views}" \
+]
+
+# To try and make `php artisan self-diagnosis` happy.
+RUN php artisan storage:link
+
+# The parent directory of the sqlite database must be writable.
+# https://github.com/wallabag/wallabag/issues/1845#issuecomment-205726683
+RUN chmod a+rw database/
+
+# Get the GIT_SHA1 from outside (as a build arg).
+ARG GIT_SHA1
+ENV GIT_SHA1 $GIT_SHA1
+
