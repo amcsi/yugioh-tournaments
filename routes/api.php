@@ -1,21 +1,23 @@
 <?php
 
+use Carbon\CarbonImmutable;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
-Route::get('/tournaments', function () {
+Route::get('/tournaments', function (Request $request) {
     $path = 'public/tournaments.json';
 
     if (! Storage::exists($path)) {
         return response()->json(['error' => 'Tournaments data not available. Run php artisan tournaments:fetch.'], 404);
     }
 
-    $json = Storage::get($path);
-    $data = json_decode($json, true);
+    $ifModifiedSince = $request->headers->get('If-Modified-Since');
 
-    if ($data === null) {
-        return response()->json(['error' => 'Invalid tournaments data.'], 500);
+    $lastModified = Storage::lastModified($path);
+    if ($ifModifiedSince && $lastModified === new CarbonImmutable($ifModifiedSince)->getTimestamp()) {
+        return response('')->setNotModified();
     }
 
-    return response()->json($data)->header('Cache-Control', 'public, max-age=300');
+    return Storage::response($path)->setLastModified(CarbonImmutable::createFromTimestamp($lastModified));
 });
